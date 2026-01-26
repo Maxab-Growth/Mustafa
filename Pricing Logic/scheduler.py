@@ -203,18 +203,18 @@ def run_continuous():
             
             # Run at the beginning of each scheduled hour (minute 0-2)
             # and only if we haven't run for this hour yet
-            if current_minute <= 2 and current_hour != last_run_hour:
+            if current_minute <= 10 and current_hour != last_run_hour:
                 if current_hour in SCHEDULE:
                     run_scheduled_tasks(current_hour)
                     last_run_hour = current_hour
             
             # Reset last_run_hour when minute passes 2
             # This allows re-running if the script restarts
-            if current_minute > 2 and last_run_hour == current_hour:
+            if current_minute > 10 and last_run_hour == current_hour:
                 pass  # Keep last_run_hour to prevent re-running same hour
             
             # Sleep for 30 seconds before checking again
-            time.sleep(30)
+            time.sleep(300)
             
         except KeyboardInterrupt:
             log_message("Scheduler stopped by user (Ctrl+C)")
