@@ -363,11 +363,12 @@ def send_text_slack(channel, text):
     Note: This function automatically calls initialize_env() to set up the Slack token.
     """
     import slack
+    from slack_sdk import WebClient # slack client to send files
     import os
 
     initialize_env()
 
-    client = slack.WebClient(token=os.environ["SLACK_TOKEN"])
+    client = WebClient(token=os.environ["SLACK_TOKEN"])
     try:
         client.chat_postMessage(
         channel=channel,
