@@ -1,0 +1,113 @@
+[2026-01-26 18:13:54] Scheduler started in continuous mode
+[2026-01-26 18:18:24] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-26 18:19:27] Scheduler started in continuous mode
+[2026-01-26 19:04:27] ============================================================
+[2026-01-26 19:04:27] Running scheduled tasks for hour 19:00
+[2026-01-26 19:04:27] Notebooks: module_4
+[2026-01-26 19:04:27] ============================================================
+[2026-01-26 19:04:27] Starting: module_4
+[2026-01-26 19:19:23] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-26 19:19:23] Scheduler started in continuous mode
+[2026-01-26 19:19:35] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-26 19:20:27] Scheduler started in continuous mode
+[2026-01-26 19:20:27] ============================================================
+[2026-01-26 19:20:27] Running scheduled tasks for hour 19:00
+[2026-01-26 19:20:27] Notebooks: module_4
+[2026-01-26 19:20:27] ============================================================
+[2026-01-26 19:20:27] Starting: module_4
+[2026-01-26 19:23:09] SUCCESS: module_4 completed
+[2026-01-26 19:23:09] 
+============================================================
+[2026-01-26 19:23:09] SUMMARY for hour 19:00
+[2026-01-26 19:23:09]   module_4: ✓ SUCCESS
+[2026-01-26 19:23:09] ============================================================
+
+[2026-01-26 19:24:19] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-26 19:24:38] Scheduler started in continuous mode
+[2026-01-26 20:04:38] ============================================================
+[2026-01-26 20:04:38] Running scheduled tasks for hour 20:00
+[2026-01-26 20:04:38] Notebooks: module_4
+[2026-01-26 20:04:38] ============================================================
+[2026-01-26 20:04:38] Starting: module_4
+[2026-01-26 20:11:45] SUCCESS: module_4 completed
+[2026-01-26 20:11:45] 
+============================================================
+[2026-01-26 20:11:45] SUMMARY for hour 20:00
+[2026-01-26 20:11:45]   module_4: ✓ SUCCESS
+[2026-01-26 20:11:45] ============================================================
+
+[2026-01-26 21:01:46] ============================================================
+[2026-01-26 21:01:46] Running scheduled tasks for hour 21:00
+[2026-01-26 21:01:46] Notebooks: module_3
+[2026-01-26 21:01:46] ============================================================
+[2026-01-26 21:01:46] Starting: module_3
+[2026-01-26 21:23:17] ERROR: module_3 failed with code 1
+[2026-01-26 21:23:17] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_3_periodic_actions.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 10, in <module>
+    sys.exit(main())
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.10/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(argv=arg
+[2026-01-26 21:23:21] Slack alert sent for module_3 failure
+[2026-01-26 21:23:21] 
+============================================================
+[2026-01-26 21:23:21] SUMMARY for hour 21:00
+[2026-01-26 21:23:21]   module_3: ✗ FAILED
+[2026-01-26 21:23:21] ============================================================
+
+[2026-01-26 21:23:26] Slack summary sent for hour 21
+[2026-01-26 22:03:26] ============================================================
+[2026-01-26 22:03:26] Running scheduled tasks for hour 22:00
+[2026-01-26 22:03:26] Notebooks: module_4
+[2026-01-26 22:03:26] ============================================================
+[2026-01-26 22:03:26] Starting: module_4
+[2026-01-27 00:39:42] Scheduler started in continuous mode
+[2026-01-27 05:04:42] ============================================================
+[2026-01-27 05:04:42] Running scheduled tasks for hour 5:00
+[2026-01-27 05:04:42] Notebooks: module_4
+[2026-01-27 05:04:42] ============================================================
+[2026-01-27 05:04:42] Starting: module_4
+[2026-01-27 05:05:23] ERROR: module_4 failed with code 1
+[2026-01-27 05:05:23] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_4_hourly_updates.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_
+[2026-01-27 05:05:28] Slack alert sent for module_4 failure
+[2026-01-27 05:05:28] 
+============================================================
+[2026-01-27 05:05:28] SUMMARY for hour 5:00
+[2026-01-27 05:05:28]   module_4: ✗ FAILED
+[2026-01-27 05:05:28] ============================================================
+
+[2026-01-27 05:05:31] Slack summary sent for hour 5
+[2026-01-27 08:00:31] ============================================================
+[2026-01-27 08:00:31] Running scheduled tasks for hour 8:00
+[2026-01-27 08:00:31] Notebooks: data_extraction, module_2
+[2026-01-27 08:00:31] ============================================================
+[2026-01-27 08:00:31] Starting: data_extraction
+[2026-01-27 08:07:59] SUCCESS: data_extraction completed
+[2026-01-27 08:08:04] Starting: module_2
+[2026-01-27 08:10:40] SUCCESS: module_2 completed
+[2026-01-27 08:10:45] 
+============================================================
+[2026-01-27 08:10:45] SUMMARY for hour 8:00
+[2026-01-27 08:10:45]   data_extraction: ✓ SUCCESS
+[2026-01-27 08:10:45]   module_2: ✓ SUCCESS
+[2026-01-27 08:10:45] ============================================================
+
+[2026-01-27 10:00:09] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-27 10:04:47] Running tasks for hour 5:00 (TEST MODE)
+[2026-01-27 10:04:47] ============================================================
+[2026-01-27 10:04:47] Running scheduled tasks for hour 5:00
+[2026-01-27 10:04:47] Notebooks: module_4
+[2026-01-27 10:04:47] ============================================================
+[2026-01-27 10:04:47] TEST MODE: Would run module_4 (/home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_4_hourly_updates.ipynb)
+[2026-01-27 10:04:47] 
+============================================================
+[2026-01-27 10:04:47] SUMMARY for hour 5:00
+[2026-01-27 10:04:47]   module_4: ✓ SUCCESS
+[2026-01-27 10:04:47] ============================================================
+
