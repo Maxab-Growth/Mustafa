@@ -111,3 +111,1001 @@ Traceback (most recent call last):
 [2026-01-27 10:04:47]   module_4: ✓ SUCCESS
 [2026-01-27 10:04:47] ============================================================
 
+[2026-01-27 16:38:02] Scheduler started in continuous mode
+[2026-01-27 16:38:17] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-27 16:38:26] Scheduler started in continuous mode
+[2026-01-27 17:03:26] ============================================================
+[2026-01-27 17:03:26] Running scheduled tasks for hour 17:00
+[2026-01-27 17:03:26] Notebooks: module_4
+[2026-01-27 17:03:26] ============================================================
+[2026-01-27 17:03:26] Starting: module_4
+[2026-01-27 17:17:04] ERROR: module_4 failed with code 1
+[2026-01-27 17:17:04] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_4_hourly_updates.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_
+[2026-01-27 17:17:07] Slack alert sent for module_4 failure
+[2026-01-27 17:17:07] 
+============================================================
+[2026-01-27 17:17:07] SUMMARY for hour 17:00
+[2026-01-27 17:17:07]   module_4: ✗ FAILED
+[2026-01-27 17:17:07] ============================================================
+
+[2026-01-27 17:17:11] Slack summary sent for hour 17
+[2026-01-27 17:26:14] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-27 17:26:16] Scheduler started in continuous mode
+[2026-01-27 17:31:24] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-27 17:31:45] Scheduler started in continuous mode
+[2026-01-27 18:01:45] ============================================================
+[2026-01-27 18:01:45] Running scheduled tasks for hour 18:00
+[2026-01-27 18:01:45] Notebooks: module_3
+[2026-01-27 18:01:45] ============================================================
+[2026-01-27 18:01:45] Starting: module_3
+[2026-01-27 18:06:28] ERROR: module_3 failed with code 1
+[2026-01-27 18:06:28] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_3_periodic_actions.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launc
+[2026-01-27 18:06:33] Slack alert sent for module_3 failure
+[2026-01-27 18:06:33] 
+============================================================
+[2026-01-27 18:06:33] SUMMARY for hour 18:00
+[2026-01-27 18:06:33]   module_3: ✗ FAILED
+[2026-01-27 18:06:33] ============================================================
+
+[2026-01-27 18:06:36] Slack summary sent for hour 18
+[2026-01-27 18:28:36] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-27 18:30:00] Scheduler started in continuous mode
+[2026-01-27 19:00:00] ============================================================
+[2026-01-27 19:00:00] Running scheduled tasks for hour 19:00
+[2026-01-27 19:00:00] Notebooks: module_4
+[2026-01-27 19:00:00] ============================================================
+[2026-01-27 19:00:00] Starting: module_4
+[2026-01-27 19:02:55] SUCCESS: module_4 completed
+[2026-01-27 19:02:55] 
+============================================================
+[2026-01-27 19:02:55] SUMMARY for hour 19:00
+[2026-01-27 19:02:55]   module_4: ✓ SUCCESS
+[2026-01-27 19:02:55] ============================================================
+
+[2026-01-27 20:02:55] ============================================================
+[2026-01-27 20:02:55] Running scheduled tasks for hour 20:00
+[2026-01-27 20:02:55] Notebooks: module_4
+[2026-01-27 20:02:55] ============================================================
+[2026-01-27 20:02:55] Starting: module_4
+[2026-01-27 20:05:45] SUCCESS: module_4 completed
+[2026-01-27 20:05:45] 
+============================================================
+[2026-01-27 20:05:45] SUMMARY for hour 20:00
+[2026-01-27 20:05:45]   module_4: ✓ SUCCESS
+[2026-01-27 20:05:45] ============================================================
+
+[2026-01-27 21:00:45] ============================================================
+[2026-01-27 21:00:45] Running scheduled tasks for hour 21:00
+[2026-01-27 21:00:45] Notebooks: module_3
+[2026-01-27 21:00:45] ============================================================
+[2026-01-27 21:00:45] Starting: module_3
+[2026-01-27 21:20:44] SUCCESS: module_3 completed
+[2026-01-27 21:20:44] 
+============================================================
+[2026-01-27 21:20:44] SUMMARY for hour 21:00
+[2026-01-27 21:20:44]   module_3: ✓ SUCCESS
+[2026-01-27 21:20:44] ============================================================
+
+[2026-01-27 22:00:44] ============================================================
+[2026-01-27 22:00:44] Running scheduled tasks for hour 22:00
+[2026-01-27 22:00:44] Notebooks: module_4
+[2026-01-27 22:00:44] ============================================================
+[2026-01-27 22:00:44] Starting: module_4
+[2026-01-27 22:04:57] SUCCESS: module_4 completed
+[2026-01-27 22:04:57] 
+============================================================
+[2026-01-27 22:04:57] SUMMARY for hour 22:00
+[2026-01-27 22:04:57]   module_4: ✓ SUCCESS
+[2026-01-27 22:04:57] ============================================================
+
+[2026-01-27 22:05:49] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-27 22:36:56] Scheduler started in continuous mode
+[2026-01-27 23:01:56] ============================================================
+[2026-01-27 23:01:56] Running scheduled tasks for hour 23:00
+[2026-01-27 23:01:56] Notebooks: module_3
+[2026-01-27 23:01:56] ============================================================
+[2026-01-27 23:01:56] Starting: module_3
+[2026-01-27 23:20:51] SUCCESS: module_3 completed
+[2026-01-27 23:20:51] 
+============================================================
+[2026-01-27 23:20:51] SUMMARY for hour 23:00
+[2026-01-27 23:20:51]   module_3: ✓ SUCCESS
+[2026-01-27 23:20:51] ============================================================
+
+[2026-01-27 23:30:38] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-27 23:33:14] Scheduler started in continuous mode
+[2026-01-28 05:03:14] ============================================================
+[2026-01-28 05:03:14] Running scheduled tasks for hour 5:00
+[2026-01-28 05:03:14] Notebooks: module_4
+[2026-01-28 05:03:14] ============================================================
+[2026-01-28 05:03:14] Starting: module_4
+[2026-01-28 05:03:47] ERROR: module_4 failed with code 1
+[2026-01-28 05:03:47] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_4_hourly_updates.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_
+[2026-01-28 05:03:51] Slack alert sent for module_4 failure
+[2026-01-28 05:03:51] 
+============================================================
+[2026-01-28 05:03:51] SUMMARY for hour 5:00
+[2026-01-28 05:03:51]   module_4: ✗ FAILED
+[2026-01-28 05:03:51] ============================================================
+
+[2026-01-28 05:03:55] Slack summary sent for hour 5
+[2026-01-28 08:03:55] ============================================================
+[2026-01-28 08:03:55] Running scheduled tasks for hour 8:00
+[2026-01-28 08:03:55] Notebooks: data_extraction, module_2
+[2026-01-28 08:03:55] ============================================================
+[2026-01-28 08:03:55] Starting: data_extraction
+[2026-01-28 08:12:24] SUCCESS: data_extraction completed
+[2026-01-28 08:12:29] Starting: module_2
+[2026-01-28 08:15:12] SUCCESS: module_2 completed
+[2026-01-28 08:15:17] 
+============================================================
+[2026-01-28 08:15:17] SUMMARY for hour 8:00
+[2026-01-28 08:15:17]   data_extraction: ✓ SUCCESS
+[2026-01-28 08:15:17]   module_2: ✓ SUCCESS
+[2026-01-28 08:15:17] ============================================================
+
+[2026-01-28 08:37:44] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-28 08:43:30] Scheduler started in continuous mode
+[2026-01-28 08:55:29] Scheduler stopped by user (Interrupt Kernel)
+[2026-01-28 08:55:57] Scheduler started in continuous mode
+[2026-01-28 12:00:57] ============================================================
+[2026-01-28 12:00:57] Running scheduled tasks for hour 12:00
+[2026-01-28 12:00:57] Notebooks: module_3
+[2026-01-28 12:00:57] ============================================================
+[2026-01-28 12:00:57] Starting: module_3
+[2026-01-28 12:20:37] SUCCESS: module_3 completed
+[2026-01-28 12:20:37] 
+============================================================
+[2026-01-28 12:20:37] SUMMARY for hour 12:00
+[2026-01-28 12:20:37]   module_3: ✓ SUCCESS
+[2026-01-28 12:20:37] ============================================================
+
+[2026-01-28 13:00:37] ============================================================
+[2026-01-28 13:00:37] Running scheduled tasks for hour 13:00
+[2026-01-28 13:00:37] Notebooks: module_4, wholeSale
+[2026-01-28 13:00:37] ============================================================
+[2026-01-28 13:00:37] Starting: module_4
+[2026-01-28 13:03:24] SUCCESS: module_4 completed
+[2026-01-28 13:03:29] Starting: wholeSale
+[2026-01-28 13:04:29] ERROR: wholeSale failed with code 1
+[2026-01-28 13:04:29] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/whole_sale_new_logic.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(ar
+[2026-01-28 13:04:33] Slack alert sent for wholeSale failure
+[2026-01-28 13:04:38] 
+============================================================
+[2026-01-28 13:04:38] SUMMARY for hour 13:00
+[2026-01-28 13:04:38]   module_4: ✓ SUCCESS
+[2026-01-28 13:04:38]   wholeSale: ✗ FAILED
+[2026-01-28 13:04:38] ============================================================
+
+[2026-01-28 13:04:42] Slack summary sent for hour 13
+[2026-01-28 14:04:42] ============================================================
+[2026-01-28 14:04:42] Running scheduled tasks for hour 14:00
+[2026-01-28 14:04:42] Notebooks: module_4
+[2026-01-28 14:04:42] ============================================================
+[2026-01-28 14:04:42] Starting: module_4
+[2026-01-28 14:07:32] SUCCESS: module_4 completed
+[2026-01-28 14:07:32] 
+============================================================
+[2026-01-28 14:07:32] SUMMARY for hour 14:00
+[2026-01-28 14:07:32]   module_4: ✓ SUCCESS
+[2026-01-28 14:07:32] ============================================================
+
+[2026-01-28 15:02:32] ============================================================
+[2026-01-28 15:02:32] Running scheduled tasks for hour 15:00
+[2026-01-28 15:02:32] Notebooks: module_4
+[2026-01-28 15:02:32] ============================================================
+[2026-01-28 15:02:32] Starting: module_4
+[2026-01-28 15:05:57] SUCCESS: module_4 completed
+[2026-01-28 15:05:57] 
+============================================================
+[2026-01-28 15:05:57] SUMMARY for hour 15:00
+[2026-01-28 15:05:57]   module_4: ✓ SUCCESS
+[2026-01-28 15:05:57] ============================================================
+
+[2026-01-28 16:00:57] ============================================================
+[2026-01-28 16:00:57] Running scheduled tasks for hour 16:00
+[2026-01-28 16:00:57] Notebooks: module_4
+[2026-01-28 16:00:57] ============================================================
+[2026-01-28 16:00:57] Starting: module_4
+[2026-01-28 16:04:17] SUCCESS: module_4 completed
+[2026-01-28 16:04:17] 
+============================================================
+[2026-01-28 16:04:17] SUMMARY for hour 16:00
+[2026-01-28 16:04:17]   module_4: ✓ SUCCESS
+[2026-01-28 16:04:17] ============================================================
+
+[2026-01-28 17:04:17] ============================================================
+[2026-01-28 17:04:17] Running scheduled tasks for hour 17:00
+[2026-01-28 17:04:17] Notebooks: module_3
+[2026-01-28 17:04:17] ============================================================
+[2026-01-28 17:04:17] Starting: module_3
+[2026-01-28 17:30:10] SUCCESS: module_3 completed
+[2026-01-28 17:30:10] 
+============================================================
+[2026-01-28 17:30:10] SUMMARY for hour 17:00
+[2026-01-28 17:30:10]   module_3: ✓ SUCCESS
+[2026-01-28 17:30:10] ============================================================
+
+[2026-01-28 18:00:10] ============================================================
+[2026-01-28 18:00:10] Running scheduled tasks for hour 18:00
+[2026-01-28 18:00:10] Notebooks: module_4, wholeSale
+[2026-01-28 18:00:10] ============================================================
+[2026-01-28 18:00:10] Starting: module_4
+[2026-01-28 18:04:21] SUCCESS: module_4 completed
+[2026-01-28 18:04:26] Starting: wholeSale
+[2026-01-28 18:05:27] ERROR: wholeSale failed with code 1
+[2026-01-28 18:05:27] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/whole_sale_new_logic.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(ar
+[2026-01-28 18:05:30] Slack alert sent for wholeSale failure
+[2026-01-28 18:05:35] 
+============================================================
+[2026-01-28 18:05:35] SUMMARY for hour 18:00
+[2026-01-28 18:05:35]   module_4: ✓ SUCCESS
+[2026-01-28 18:05:35]   wholeSale: ✗ FAILED
+[2026-01-28 18:05:35] ============================================================
+
+[2026-01-28 18:05:39] Slack summary sent for hour 18
+[2026-01-28 19:00:39] ============================================================
+[2026-01-28 19:00:39] Running scheduled tasks for hour 19:00
+[2026-01-28 19:00:39] Notebooks: module_4
+[2026-01-28 19:00:39] ============================================================
+[2026-01-28 19:00:39] Starting: module_4
+[2026-01-28 19:04:00] SUCCESS: module_4 completed
+[2026-01-28 19:04:00] 
+============================================================
+[2026-01-28 19:04:00] SUMMARY for hour 19:00
+[2026-01-28 19:04:00]   module_4: ✓ SUCCESS
+[2026-01-28 19:04:00] ============================================================
+
+[2026-01-28 20:04:00] ============================================================
+[2026-01-28 20:04:00] Running scheduled tasks for hour 20:00
+[2026-01-28 20:04:00] Notebooks: module_4
+[2026-01-28 20:04:00] ============================================================
+[2026-01-28 20:04:00] Starting: module_4
+[2026-01-28 20:07:01] SUCCESS: module_4 completed
+[2026-01-28 20:07:01] 
+============================================================
+[2026-01-28 20:07:01] SUMMARY for hour 20:00
+[2026-01-28 20:07:01]   module_4: ✓ SUCCESS
+[2026-01-28 20:07:01] ============================================================
+
+[2026-01-28 21:02:01] ============================================================
+[2026-01-28 21:02:01] Running scheduled tasks for hour 21:00
+[2026-01-28 21:02:01] Notebooks: module_4
+[2026-01-28 21:02:01] ============================================================
+[2026-01-28 21:02:01] Starting: module_4
+[2026-01-28 21:04:52] SUCCESS: module_4 completed
+[2026-01-28 21:04:52] 
+============================================================
+[2026-01-28 21:04:52] SUMMARY for hour 21:00
+[2026-01-28 21:04:52]   module_4: ✓ SUCCESS
+[2026-01-28 21:04:52] ============================================================
+
+[2026-01-28 22:04:52] ============================================================
+[2026-01-28 22:04:52] Running scheduled tasks for hour 22:00
+[2026-01-28 22:04:52] Notebooks: module_4
+[2026-01-28 22:04:52] ============================================================
+[2026-01-28 22:04:52] Starting: module_4
+[2026-01-28 22:09:11] SUCCESS: module_4 completed
+[2026-01-28 22:09:11] 
+============================================================
+[2026-01-28 22:09:11] SUMMARY for hour 22:00
+[2026-01-28 22:09:11]   module_4: ✓ SUCCESS
+[2026-01-28 22:09:11] ============================================================
+
+[2026-01-28 23:04:11] ============================================================
+[2026-01-28 23:04:11] Running scheduled tasks for hour 23:00
+[2026-01-28 23:04:11] Notebooks: module_3
+[2026-01-28 23:04:11] ============================================================
+[2026-01-28 23:04:11] Starting: module_3
+[2026-01-28 23:22:09] SUCCESS: module_3 completed
+[2026-01-28 23:22:09] 
+============================================================
+[2026-01-28 23:22:09] SUMMARY for hour 23:00
+[2026-01-28 23:22:09]   module_3: ✓ SUCCESS
+[2026-01-28 23:22:09] ============================================================
+
+[2026-01-29 05:02:09] ============================================================
+[2026-01-29 05:02:09] Running scheduled tasks for hour 5:00
+[2026-01-29 05:02:09] Notebooks: module_4
+[2026-01-29 05:02:09] ============================================================
+[2026-01-29 05:02:09] Starting: module_4
+[2026-01-29 05:05:04] ERROR: module_4 failed with code 1
+[2026-01-29 05:05:04] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_4_hourly_updates.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_
+[2026-01-29 05:05:08] Slack alert sent for module_4 failure
+[2026-01-29 05:05:08] 
+============================================================
+[2026-01-29 05:05:08] SUMMARY for hour 5:00
+[2026-01-29 05:05:08]   module_4: ✗ FAILED
+[2026-01-29 05:05:08] ============================================================
+
+[2026-01-29 05:05:12] Slack summary sent for hour 5
+[2026-01-29 08:00:12] ============================================================
+[2026-01-29 08:00:12] Running scheduled tasks for hour 8:00
+[2026-01-29 08:00:12] Notebooks: data_extraction, module_2
+[2026-01-29 08:00:12] ============================================================
+[2026-01-29 08:00:12] Starting: data_extraction
+[2026-01-29 08:07:18] SUCCESS: data_extraction completed
+[2026-01-29 08:07:23] Starting: module_2
+[2026-01-29 08:10:07] SUCCESS: module_2 completed
+[2026-01-29 08:10:12] 
+============================================================
+[2026-01-29 08:10:12] SUMMARY for hour 8:00
+[2026-01-29 08:10:12]   data_extraction: ✓ SUCCESS
+[2026-01-29 08:10:12]   module_2: ✓ SUCCESS
+[2026-01-29 08:10:12] ============================================================
+
+[2026-01-29 12:00:12] ============================================================
+[2026-01-29 12:00:12] Running scheduled tasks for hour 12:00
+[2026-01-29 12:00:12] Notebooks: module_3
+[2026-01-29 12:00:12] ============================================================
+[2026-01-29 12:00:12] Starting: module_3
+[2026-01-29 12:08:19] SUCCESS: module_3 completed
+[2026-01-29 12:08:19] 
+============================================================
+[2026-01-29 12:08:19] SUMMARY for hour 12:00
+[2026-01-29 12:08:19]   module_3: ✓ SUCCESS
+[2026-01-29 12:08:19] ============================================================
+
+[2026-01-29 13:03:19] ============================================================
+[2026-01-29 13:03:19] Running scheduled tasks for hour 13:00
+[2026-01-29 13:03:19] Notebooks: module_4, wholeSale
+[2026-01-29 13:03:19] ============================================================
+[2026-01-29 13:03:19] Starting: module_4
+[2026-01-29 13:05:51] SUCCESS: module_4 completed
+[2026-01-29 13:05:56] Starting: wholeSale
+[2026-01-29 13:06:56] ERROR: wholeSale failed with code 1
+[2026-01-29 13:06:56] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/whole_sale_new_logic.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(ar
+[2026-01-29 13:07:00] Slack alert sent for wholeSale failure
+[2026-01-29 13:07:05] 
+============================================================
+[2026-01-29 13:07:05] SUMMARY for hour 13:00
+[2026-01-29 13:07:05]   module_4: ✓ SUCCESS
+[2026-01-29 13:07:05]   wholeSale: ✗ FAILED
+[2026-01-29 13:07:05] ============================================================
+
+[2026-01-29 13:07:09] Slack summary sent for hour 13
+[2026-01-29 14:02:09] ============================================================
+[2026-01-29 14:02:09] Running scheduled tasks for hour 14:00
+[2026-01-29 14:02:09] Notebooks: module_4
+[2026-01-29 14:02:09] ============================================================
+[2026-01-29 14:02:09] Starting: module_4
+[2026-01-29 14:04:53] SUCCESS: module_4 completed
+[2026-01-29 14:04:53] 
+============================================================
+[2026-01-29 14:04:53] SUMMARY for hour 14:00
+[2026-01-29 14:04:53]   module_4: ✓ SUCCESS
+[2026-01-29 14:04:53] ============================================================
+
+[2026-01-29 15:04:53] ============================================================
+[2026-01-29 15:04:53] Running scheduled tasks for hour 15:00
+[2026-01-29 15:04:53] Notebooks: module_4
+[2026-01-29 15:04:53] ============================================================
+[2026-01-29 15:04:53] Starting: module_4
+[2026-01-29 15:07:58] SUCCESS: module_4 completed
+[2026-01-29 15:07:58] 
+============================================================
+[2026-01-29 15:07:58] SUMMARY for hour 15:00
+[2026-01-29 15:07:58]   module_4: ✓ SUCCESS
+[2026-01-29 15:07:58] ============================================================
+
+[2026-01-29 16:02:58] ============================================================
+[2026-01-29 16:02:58] Running scheduled tasks for hour 16:00
+[2026-01-29 16:02:58] Notebooks: module_4
+[2026-01-29 16:02:58] ============================================================
+[2026-01-29 16:02:58] Starting: module_4
+[2026-01-29 16:05:26] SUCCESS: module_4 completed
+[2026-01-29 16:05:26] 
+============================================================
+[2026-01-29 16:05:26] SUMMARY for hour 16:00
+[2026-01-29 16:05:26]   module_4: ✓ SUCCESS
+[2026-01-29 16:05:26] ============================================================
+
+[2026-01-29 17:00:26] ============================================================
+[2026-01-29 17:00:26] Running scheduled tasks for hour 17:00
+[2026-01-29 17:00:26] Notebooks: module_3
+[2026-01-29 17:00:26] ============================================================
+[2026-01-29 17:00:26] Starting: module_3
+[2026-01-29 17:18:19] SUCCESS: module_3 completed
+[2026-01-29 17:18:19] 
+============================================================
+[2026-01-29 17:18:19] SUMMARY for hour 17:00
+[2026-01-29 17:18:19]   module_3: ✓ SUCCESS
+[2026-01-29 17:18:19] ============================================================
+
+[2026-01-29 18:03:19] ============================================================
+[2026-01-29 18:03:19] Running scheduled tasks for hour 18:00
+[2026-01-29 18:03:19] Notebooks: module_4, wholeSale
+[2026-01-29 18:03:19] ============================================================
+[2026-01-29 18:03:19] Starting: module_4
+[2026-01-29 18:06:05] SUCCESS: module_4 completed
+[2026-01-29 18:06:10] Starting: wholeSale
+[2026-01-29 18:07:09] ERROR: wholeSale failed with code 1
+[2026-01-29 18:07:09] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/whole_sale_new_logic.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(ar
+[2026-01-29 18:07:13] Slack alert sent for wholeSale failure
+[2026-01-29 18:07:18] 
+============================================================
+[2026-01-29 18:07:18] SUMMARY for hour 18:00
+[2026-01-29 18:07:18]   module_4: ✓ SUCCESS
+[2026-01-29 18:07:18]   wholeSale: ✗ FAILED
+[2026-01-29 18:07:18] ============================================================
+
+[2026-01-29 18:07:22] Slack summary sent for hour 18
+[2026-01-29 19:02:22] ============================================================
+[2026-01-29 19:02:22] Running scheduled tasks for hour 19:00
+[2026-01-29 19:02:22] Notebooks: module_4
+[2026-01-29 19:02:22] ============================================================
+[2026-01-29 19:02:22] Starting: module_4
+[2026-01-29 19:04:52] SUCCESS: module_4 completed
+[2026-01-29 19:04:52] 
+============================================================
+[2026-01-29 19:04:52] SUMMARY for hour 19:00
+[2026-01-29 19:04:52]   module_4: ✓ SUCCESS
+[2026-01-29 19:04:52] ============================================================
+
+[2026-01-29 20:04:52] ============================================================
+[2026-01-29 20:04:52] Running scheduled tasks for hour 20:00
+[2026-01-29 20:04:52] Notebooks: module_4
+[2026-01-29 20:04:52] ============================================================
+[2026-01-29 20:04:52] Starting: module_4
+[2026-01-29 20:07:09] SUCCESS: module_4 completed
+[2026-01-29 20:07:09] 
+============================================================
+[2026-01-29 20:07:09] SUMMARY for hour 20:00
+[2026-01-29 20:07:09]   module_4: ✓ SUCCESS
+[2026-01-29 20:07:09] ============================================================
+
+[2026-01-29 21:02:09] ============================================================
+[2026-01-29 21:02:09] Running scheduled tasks for hour 21:00
+[2026-01-29 21:02:09] Notebooks: module_4
+[2026-01-29 21:02:09] ============================================================
+[2026-01-29 21:02:09] Starting: module_4
+[2026-01-29 21:04:50] SUCCESS: module_4 completed
+[2026-01-29 21:04:50] 
+============================================================
+[2026-01-29 21:04:50] SUMMARY for hour 21:00
+[2026-01-29 21:04:50]   module_4: ✓ SUCCESS
+[2026-01-29 21:04:50] ============================================================
+
+[2026-01-29 22:04:50] ============================================================
+[2026-01-29 22:04:50] Running scheduled tasks for hour 22:00
+[2026-01-29 22:04:50] Notebooks: module_4
+[2026-01-29 22:04:50] ============================================================
+[2026-01-29 22:04:50] Starting: module_4
+[2026-01-29 22:07:06] SUCCESS: module_4 completed
+[2026-01-29 22:07:06] 
+============================================================
+[2026-01-29 22:07:06] SUMMARY for hour 22:00
+[2026-01-29 22:07:06]   module_4: ✓ SUCCESS
+[2026-01-29 22:07:06] ============================================================
+
+[2026-01-29 23:02:06] ============================================================
+[2026-01-29 23:02:06] Running scheduled tasks for hour 23:00
+[2026-01-29 23:02:06] Notebooks: module_3
+[2026-01-29 23:02:06] ============================================================
+[2026-01-29 23:02:06] Starting: module_3
+[2026-01-29 23:21:05] SUCCESS: module_3 completed
+[2026-01-29 23:21:05] 
+============================================================
+[2026-01-29 23:21:05] SUMMARY for hour 23:00
+[2026-01-29 23:21:05]   module_3: ✓ SUCCESS
+[2026-01-29 23:21:05] ============================================================
+
+[2026-01-30 05:01:05] ============================================================
+[2026-01-30 05:01:05] Running scheduled tasks for hour 5:00
+[2026-01-30 05:01:05] Notebooks: module_4
+[2026-01-30 05:01:05] ============================================================
+[2026-01-30 05:01:05] Starting: module_4
+[2026-01-30 05:03:32] ERROR: module_4 failed with code 1
+[2026-01-30 05:03:32] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_4_hourly_updates.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_
+[2026-01-30 05:03:36] Slack alert sent for module_4 failure
+[2026-01-30 05:03:36] 
+============================================================
+[2026-01-30 05:03:36] SUMMARY for hour 5:00
+[2026-01-30 05:03:36]   module_4: ✗ FAILED
+[2026-01-30 05:03:36] ============================================================
+
+[2026-01-30 05:03:40] Slack summary sent for hour 5
+[2026-01-30 08:03:40] ============================================================
+[2026-01-30 08:03:40] Running scheduled tasks for hour 8:00
+[2026-01-30 08:03:40] Notebooks: data_extraction, module_2
+[2026-01-30 08:03:40] ============================================================
+[2026-01-30 08:03:40] Starting: data_extraction
+[2026-01-30 08:10:42] SUCCESS: data_extraction completed
+[2026-01-30 08:10:47] Starting: module_2
+[2026-01-30 08:13:24] SUCCESS: module_2 completed
+[2026-01-30 08:13:29] 
+============================================================
+[2026-01-30 08:13:29] SUMMARY for hour 8:00
+[2026-01-30 08:13:29]   data_extraction: ✓ SUCCESS
+[2026-01-30 08:13:29]   module_2: ✓ SUCCESS
+[2026-01-30 08:13:29] ============================================================
+
+[2026-01-30 12:03:29] ============================================================
+[2026-01-30 12:03:29] Running scheduled tasks for hour 12:00
+[2026-01-30 12:03:29] Notebooks: module_3
+[2026-01-30 12:03:29] ============================================================
+[2026-01-30 12:03:29] Starting: module_3
+[2026-01-30 12:11:54] SUCCESS: module_3 completed
+[2026-01-30 12:11:54] 
+============================================================
+[2026-01-30 12:11:54] SUMMARY for hour 12:00
+[2026-01-30 12:11:54]   module_3: ✓ SUCCESS
+[2026-01-30 12:11:54] ============================================================
+
+[2026-01-30 13:01:54] ============================================================
+[2026-01-30 13:01:54] Running scheduled tasks for hour 13:00
+[2026-01-30 13:01:54] Notebooks: module_4, wholeSale
+[2026-01-30 13:01:54] ============================================================
+[2026-01-30 13:01:54] Starting: module_4
+[2026-01-30 13:04:07] SUCCESS: module_4 completed
+[2026-01-30 13:04:12] Starting: wholeSale
+[2026-01-30 13:05:27] ERROR: wholeSale failed with code 1
+[2026-01-30 13:05:27] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/whole_sale_new_logic.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(ar
+[2026-01-30 13:05:31] Slack alert sent for wholeSale failure
+[2026-01-30 13:05:36] 
+============================================================
+[2026-01-30 13:05:36] SUMMARY for hour 13:00
+[2026-01-30 13:05:36]   module_4: ✓ SUCCESS
+[2026-01-30 13:05:36]   wholeSale: ✗ FAILED
+[2026-01-30 13:05:36] ============================================================
+
+[2026-01-30 13:05:39] Slack summary sent for hour 13
+[2026-01-30 14:00:39] ============================================================
+[2026-01-30 14:00:39] Running scheduled tasks for hour 14:00
+[2026-01-30 14:00:39] Notebooks: module_4
+[2026-01-30 14:00:39] ============================================================
+[2026-01-30 14:00:39] Starting: module_4
+[2026-01-30 14:04:30] SUCCESS: module_4 completed
+[2026-01-30 14:04:30] 
+============================================================
+[2026-01-30 14:04:30] SUMMARY for hour 14:00
+[2026-01-30 14:04:30]   module_4: ✓ SUCCESS
+[2026-01-30 14:04:30] ============================================================
+
+[2026-01-30 15:04:30] ============================================================
+[2026-01-30 15:04:30] Running scheduled tasks for hour 15:00
+[2026-01-30 15:04:30] Notebooks: module_4
+[2026-01-30 15:04:30] ============================================================
+[2026-01-30 15:04:30] Starting: module_4
+[2026-01-30 15:07:07] SUCCESS: module_4 completed
+[2026-01-30 15:07:07] 
+============================================================
+[2026-01-30 15:07:07] SUMMARY for hour 15:00
+[2026-01-30 15:07:07]   module_4: ✓ SUCCESS
+[2026-01-30 15:07:07] ============================================================
+
+[2026-01-30 16:02:07] ============================================================
+[2026-01-30 16:02:07] Running scheduled tasks for hour 16:00
+[2026-01-30 16:02:07] Notebooks: module_4
+[2026-01-30 16:02:07] ============================================================
+[2026-01-30 16:02:07] Starting: module_4
+[2026-01-30 16:06:02] SUCCESS: module_4 completed
+[2026-01-30 16:06:02] 
+============================================================
+[2026-01-30 16:06:02] SUMMARY for hour 16:00
+[2026-01-30 16:06:02]   module_4: ✓ SUCCESS
+[2026-01-30 16:06:02] ============================================================
+
+[2026-01-30 17:01:02] ============================================================
+[2026-01-30 17:01:02] Running scheduled tasks for hour 17:00
+[2026-01-30 17:01:02] Notebooks: module_3
+[2026-01-30 17:01:02] ============================================================
+[2026-01-30 17:01:02] Starting: module_3
+[2026-01-30 17:19:17] SUCCESS: module_3 completed
+[2026-01-30 17:19:17] 
+============================================================
+[2026-01-30 17:19:17] SUMMARY for hour 17:00
+[2026-01-30 17:19:17]   module_3: ✓ SUCCESS
+[2026-01-30 17:19:17] ============================================================
+
+[2026-01-30 18:04:17] ============================================================
+[2026-01-30 18:04:17] Running scheduled tasks for hour 18:00
+[2026-01-30 18:04:17] Notebooks: module_4, wholeSale
+[2026-01-30 18:04:17] ============================================================
+[2026-01-30 18:04:17] Starting: module_4
+[2026-01-30 18:06:40] SUCCESS: module_4 completed
+[2026-01-30 18:06:45] Starting: wholeSale
+[2026-01-30 18:07:45] ERROR: wholeSale failed with code 1
+[2026-01-30 18:07:45] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/whole_sale_new_logic.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(ar
+[2026-01-30 18:07:48] Slack alert sent for wholeSale failure
+[2026-01-30 18:07:53] 
+============================================================
+[2026-01-30 18:07:53] SUMMARY for hour 18:00
+[2026-01-30 18:07:53]   module_4: ✓ SUCCESS
+[2026-01-30 18:07:53]   wholeSale: ✗ FAILED
+[2026-01-30 18:07:53] ============================================================
+
+[2026-01-30 18:07:57] Slack summary sent for hour 18
+[2026-01-30 19:02:57] ============================================================
+[2026-01-30 19:02:57] Running scheduled tasks for hour 19:00
+[2026-01-30 19:02:57] Notebooks: module_4
+[2026-01-30 19:02:57] ============================================================
+[2026-01-30 19:02:57] Starting: module_4
+[2026-01-30 19:05:22] SUCCESS: module_4 completed
+[2026-01-30 19:05:22] 
+============================================================
+[2026-01-30 19:05:22] SUMMARY for hour 19:00
+[2026-01-30 19:05:22]   module_4: ✓ SUCCESS
+[2026-01-30 19:05:22] ============================================================
+
+[2026-01-30 20:00:22] ============================================================
+[2026-01-30 20:00:22] Running scheduled tasks for hour 20:00
+[2026-01-30 20:00:22] Notebooks: module_4
+[2026-01-30 20:00:22] ============================================================
+[2026-01-30 20:00:22] Starting: module_4
+[2026-01-30 20:03:03] SUCCESS: module_4 completed
+[2026-01-30 20:03:03] 
+============================================================
+[2026-01-30 20:03:03] SUMMARY for hour 20:00
+[2026-01-30 20:03:03]   module_4: ✓ SUCCESS
+[2026-01-30 20:03:03] ============================================================
+
+[2026-01-30 21:03:03] ============================================================
+[2026-01-30 21:03:03] Running scheduled tasks for hour 21:00
+[2026-01-30 21:03:03] Notebooks: module_4
+[2026-01-30 21:03:03] ============================================================
+[2026-01-30 21:03:03] Starting: module_4
+[2026-01-30 21:05:38] SUCCESS: module_4 completed
+[2026-01-30 21:05:38] 
+============================================================
+[2026-01-30 21:05:38] SUMMARY for hour 21:00
+[2026-01-30 21:05:38]   module_4: ✓ SUCCESS
+[2026-01-30 21:05:38] ============================================================
+
+[2026-01-30 22:00:38] ============================================================
+[2026-01-30 22:00:38] Running scheduled tasks for hour 22:00
+[2026-01-30 22:00:38] Notebooks: module_4
+[2026-01-30 22:00:38] ============================================================
+[2026-01-30 22:00:38] Starting: module_4
+[2026-01-30 22:04:34] SUCCESS: module_4 completed
+[2026-01-30 22:04:34] 
+============================================================
+[2026-01-30 22:04:34] SUMMARY for hour 22:00
+[2026-01-30 22:04:34]   module_4: ✓ SUCCESS
+[2026-01-30 22:04:34] ============================================================
+
+[2026-01-30 23:04:34] ============================================================
+[2026-01-30 23:04:34] Running scheduled tasks for hour 23:00
+[2026-01-30 23:04:34] Notebooks: module_3
+[2026-01-30 23:04:34] ============================================================
+[2026-01-30 23:04:34] Starting: module_3
+[2026-01-30 23:23:05] SUCCESS: module_3 completed
+[2026-01-30 23:23:05] 
+============================================================
+[2026-01-30 23:23:05] SUMMARY for hour 23:00
+[2026-01-30 23:23:05]   module_3: ✓ SUCCESS
+[2026-01-30 23:23:05] ============================================================
+
+[2026-01-31 05:03:05] ============================================================
+[2026-01-31 05:03:05] Running scheduled tasks for hour 5:00
+[2026-01-31 05:03:05] Notebooks: module_4
+[2026-01-31 05:03:05] ============================================================
+[2026-01-31 05:03:05] Starting: module_4
+[2026-01-31 05:11:30] ERROR: module_4 failed with code 1
+[2026-01-31 05:11:30] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_4_hourly_updates.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_
+[2026-01-31 05:11:34] Slack alert sent for module_4 failure
+[2026-01-31 05:11:34] 
+============================================================
+[2026-01-31 05:11:34] SUMMARY for hour 5:00
+[2026-01-31 05:11:34]   module_4: ✗ FAILED
+[2026-01-31 05:11:34] ============================================================
+
+[2026-01-31 05:11:38] Slack summary sent for hour 5
+[2026-01-31 08:01:38] ============================================================
+[2026-01-31 08:01:38] Running scheduled tasks for hour 8:00
+[2026-01-31 08:01:38] Notebooks: data_extraction, module_2
+[2026-01-31 08:01:38] ============================================================
+[2026-01-31 08:01:38] Starting: data_extraction
+[2026-01-31 08:14:57] SUCCESS: data_extraction completed
+[2026-01-31 08:15:02] Starting: module_2
+[2026-01-31 08:17:34] SUCCESS: module_2 completed
+[2026-01-31 08:17:39] 
+============================================================
+[2026-01-31 08:17:39] SUMMARY for hour 8:00
+[2026-01-31 08:17:39]   data_extraction: ✓ SUCCESS
+[2026-01-31 08:17:39]   module_2: ✓ SUCCESS
+[2026-01-31 08:17:39] ============================================================
+
+[2026-01-31 12:02:39] ============================================================
+[2026-01-31 12:02:39] Running scheduled tasks for hour 12:00
+[2026-01-31 12:02:39] Notebooks: module_3
+[2026-01-31 12:02:39] ============================================================
+[2026-01-31 12:02:39] Starting: module_3
+[2026-01-31 12:11:24] SUCCESS: module_3 completed
+[2026-01-31 12:11:24] 
+============================================================
+[2026-01-31 12:11:24] SUMMARY for hour 12:00
+[2026-01-31 12:11:24]   module_3: ✓ SUCCESS
+[2026-01-31 12:11:24] ============================================================
+
+[2026-01-31 13:01:24] ============================================================
+[2026-01-31 13:01:24] Running scheduled tasks for hour 13:00
+[2026-01-31 13:01:24] Notebooks: module_4, wholeSale
+[2026-01-31 13:01:24] ============================================================
+[2026-01-31 13:01:24] Starting: module_4
+[2026-01-31 13:04:29] SUCCESS: module_4 completed
+[2026-01-31 13:04:34] Starting: wholeSale
+[2026-01-31 13:05:31] ERROR: wholeSale failed with code 1
+[2026-01-31 13:05:31] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/whole_sale_new_logic.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(ar
+[2026-01-31 13:05:35] Slack alert sent for wholeSale failure
+[2026-01-31 13:05:40] 
+============================================================
+[2026-01-31 13:05:40] SUMMARY for hour 13:00
+[2026-01-31 13:05:40]   module_4: ✓ SUCCESS
+[2026-01-31 13:05:40]   wholeSale: ✗ FAILED
+[2026-01-31 13:05:40] ============================================================
+
+[2026-01-31 13:05:43] Slack summary sent for hour 13
+[2026-01-31 14:00:43] ============================================================
+[2026-01-31 14:00:43] Running scheduled tasks for hour 14:00
+[2026-01-31 14:00:43] Notebooks: module_4
+[2026-01-31 14:00:43] ============================================================
+[2026-01-31 14:00:43] Starting: module_4
+[2026-01-31 14:04:09] SUCCESS: module_4 completed
+[2026-01-31 14:04:09] 
+============================================================
+[2026-01-31 14:04:09] SUMMARY for hour 14:00
+[2026-01-31 14:04:09]   module_4: ✓ SUCCESS
+[2026-01-31 14:04:09] ============================================================
+
+[2026-01-31 15:04:09] ============================================================
+[2026-01-31 15:04:09] Running scheduled tasks for hour 15:00
+[2026-01-31 15:04:09] Notebooks: module_4
+[2026-01-31 15:04:09] ============================================================
+[2026-01-31 15:04:09] Starting: module_4
+[2026-01-31 15:06:52] SUCCESS: module_4 completed
+[2026-01-31 15:06:52] 
+============================================================
+[2026-01-31 15:06:52] SUMMARY for hour 15:00
+[2026-01-31 15:06:52]   module_4: ✓ SUCCESS
+[2026-01-31 15:06:52] ============================================================
+
+[2026-01-31 16:01:52] ============================================================
+[2026-01-31 16:01:52] Running scheduled tasks for hour 16:00
+[2026-01-31 16:01:52] Notebooks: module_4
+[2026-01-31 16:01:52] ============================================================
+[2026-01-31 16:01:52] Starting: module_4
+[2026-01-31 16:08:26] SUCCESS: module_4 completed
+[2026-01-31 16:08:26] 
+============================================================
+[2026-01-31 16:08:26] SUMMARY for hour 16:00
+[2026-01-31 16:08:26]   module_4: ✓ SUCCESS
+[2026-01-31 16:08:26] ============================================================
+
+[2026-01-31 17:03:26] ============================================================
+[2026-01-31 17:03:26] Running scheduled tasks for hour 17:00
+[2026-01-31 17:03:26] Notebooks: module_3
+[2026-01-31 17:03:26] ============================================================
+[2026-01-31 17:03:26] Starting: module_3
+[2026-01-31 17:22:58] SUCCESS: module_3 completed
+[2026-01-31 17:22:58] 
+============================================================
+[2026-01-31 17:22:58] SUMMARY for hour 17:00
+[2026-01-31 17:22:58]   module_3: ✓ SUCCESS
+[2026-01-31 17:22:58] ============================================================
+
+[2026-01-31 18:02:58] ============================================================
+[2026-01-31 18:02:59] Running scheduled tasks for hour 18:00
+[2026-01-31 18:02:59] Notebooks: module_4, wholeSale
+[2026-01-31 18:02:59] ============================================================
+[2026-01-31 18:02:59] Starting: module_4
+[2026-01-31 18:06:00] SUCCESS: module_4 completed
+[2026-01-31 18:06:05] Starting: wholeSale
+[2026-01-31 18:07:01] ERROR: wholeSale failed with code 1
+[2026-01-31 18:07:01] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/whole_sale_new_logic.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(ar
+[2026-01-31 18:07:05] Slack alert sent for wholeSale failure
+[2026-01-31 18:07:10] 
+============================================================
+[2026-01-31 18:07:10] SUMMARY for hour 18:00
+[2026-01-31 18:07:10]   module_4: ✓ SUCCESS
+[2026-01-31 18:07:10]   wholeSale: ✗ FAILED
+[2026-01-31 18:07:10] ============================================================
+
+[2026-01-31 18:07:14] Slack summary sent for hour 18
+[2026-01-31 19:02:14] ============================================================
+[2026-01-31 19:02:14] Running scheduled tasks for hour 19:00
+[2026-01-31 19:02:14] Notebooks: module_4
+[2026-01-31 19:02:14] ============================================================
+[2026-01-31 19:02:14] Starting: module_4
+[2026-01-31 19:05:11] SUCCESS: module_4 completed
+[2026-01-31 19:05:11] 
+============================================================
+[2026-01-31 19:05:11] SUMMARY for hour 19:00
+[2026-01-31 19:05:11]   module_4: ✓ SUCCESS
+[2026-01-31 19:05:11] ============================================================
+
+[2026-01-31 20:00:11] ============================================================
+[2026-01-31 20:00:11] Running scheduled tasks for hour 20:00
+[2026-01-31 20:00:11] Notebooks: module_4
+[2026-01-31 20:00:11] ============================================================
+[2026-01-31 20:00:11] Starting: module_4
+[2026-01-31 20:02:55] SUCCESS: module_4 completed
+[2026-01-31 20:02:55] 
+============================================================
+[2026-01-31 20:02:55] SUMMARY for hour 20:00
+[2026-01-31 20:02:55]   module_4: ✓ SUCCESS
+[2026-01-31 20:02:55] ============================================================
+
+[2026-01-31 21:02:55] ============================================================
+[2026-01-31 21:02:55] Running scheduled tasks for hour 21:00
+[2026-01-31 21:02:55] Notebooks: module_4
+[2026-01-31 21:02:55] ============================================================
+[2026-01-31 21:02:55] Starting: module_4
+[2026-01-31 21:05:06] SUCCESS: module_4 completed
+[2026-01-31 21:05:06] 
+============================================================
+[2026-01-31 21:05:06] SUMMARY for hour 21:00
+[2026-01-31 21:05:06]   module_4: ✓ SUCCESS
+[2026-01-31 21:05:06] ============================================================
+
+[2026-01-31 22:00:06] ============================================================
+[2026-01-31 22:00:06] Running scheduled tasks for hour 22:00
+[2026-01-31 22:00:06] Notebooks: module_4
+[2026-01-31 22:00:06] ============================================================
+[2026-01-31 22:00:06] Starting: module_4
+[2026-01-31 22:03:38] SUCCESS: module_4 completed
+[2026-01-31 22:03:38] 
+============================================================
+[2026-01-31 22:03:38] SUMMARY for hour 22:00
+[2026-01-31 22:03:38]   module_4: ✓ SUCCESS
+[2026-01-31 22:03:38] ============================================================
+
+[2026-01-31 23:03:38] ============================================================
+[2026-01-31 23:03:38] Running scheduled tasks for hour 23:00
+[2026-01-31 23:03:38] Notebooks: module_3
+[2026-01-31 23:03:38] ============================================================
+[2026-01-31 23:03:38] Starting: module_3
+[2026-01-31 23:25:01] SUCCESS: module_3 completed
+[2026-01-31 23:25:01] 
+============================================================
+[2026-01-31 23:25:01] SUMMARY for hour 23:00
+[2026-01-31 23:25:01]   module_3: ✓ SUCCESS
+[2026-01-31 23:25:01] ============================================================
+
+[2026-02-01 05:00:01] ============================================================
+[2026-02-01 05:00:01] Running scheduled tasks for hour 5:00
+[2026-02-01 05:00:01] Notebooks: module_4
+[2026-02-01 05:00:01] ============================================================
+[2026-02-01 05:00:01] Starting: module_4
+[2026-02-01 05:02:32] ERROR: module_4 failed with code 1
+[2026-02-01 05:02:32] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_4_hourly_updates.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_
+[2026-02-01 05:02:36] Slack alert sent for module_4 failure
+[2026-02-01 05:02:36] 
+============================================================
+[2026-02-01 05:02:36] SUMMARY for hour 5:00
+[2026-02-01 05:02:36]   module_4: ✗ FAILED
+[2026-02-01 05:02:36] ============================================================
+
+[2026-02-01 05:02:39] Slack summary sent for hour 5
+[2026-02-01 08:02:39] ============================================================
+[2026-02-01 08:02:39] Running scheduled tasks for hour 8:00
+[2026-02-01 08:02:39] Notebooks: data_extraction, module_2
+[2026-02-01 08:02:39] ============================================================
+[2026-02-01 08:02:39] Starting: data_extraction
+[2026-02-01 08:19:34] SUCCESS: data_extraction completed
+[2026-02-01 08:19:39] Starting: module_2
+[2026-02-01 08:22:52] SUCCESS: module_2 completed
+[2026-02-01 08:22:57] 
+============================================================
+[2026-02-01 08:22:57] SUMMARY for hour 8:00
+[2026-02-01 08:22:57]   data_extraction: ✓ SUCCESS
+[2026-02-01 08:22:57]   module_2: ✓ SUCCESS
+[2026-02-01 08:22:57] ============================================================
+
+[2026-02-01 12:02:57] ============================================================
+[2026-02-01 12:02:57] Running scheduled tasks for hour 12:00
+[2026-02-01 12:02:57] Notebooks: module_3
+[2026-02-01 12:02:57] ============================================================
+[2026-02-01 12:02:57] Starting: module_3
+[2026-02-01 12:11:31] SUCCESS: module_3 completed
+[2026-02-01 12:11:31] 
+============================================================
+[2026-02-01 12:11:31] SUMMARY for hour 12:00
+[2026-02-01 12:11:31]   module_3: ✓ SUCCESS
+[2026-02-01 12:11:31] ============================================================
+
+[2026-02-01 13:01:31] ============================================================
+[2026-02-01 13:01:31] Running scheduled tasks for hour 13:00
+[2026-02-01 13:01:31] Notebooks: module_4, wholeSale
+[2026-02-01 13:01:31] ============================================================
+[2026-02-01 13:01:31] Starting: module_4
+[2026-02-01 13:04:13] SUCCESS: module_4 completed
+[2026-02-01 13:04:18] Starting: wholeSale
+[2026-02-01 13:12:44] SUCCESS: wholeSale completed
+[2026-02-01 13:12:49] 
+============================================================
+[2026-02-01 13:12:49] SUMMARY for hour 13:00
+[2026-02-01 13:12:49]   module_4: ✓ SUCCESS
+[2026-02-01 13:12:49]   wholeSale: ✓ SUCCESS
+[2026-02-01 13:12:49] ============================================================
+
