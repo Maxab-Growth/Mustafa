@@ -1305,3 +1305,15 @@ Traceback (most recent call last):
 
 [2026-02-02 13:24:06] Scheduler stopped by user (Interrupt Kernel)
 [2026-02-02 13:24:38] Scheduler started in continuous mode
+[2026-02-02 15:08:10] ============================================================
+[2026-02-02 15:08:10] Running scheduled tasks for hour 15:00
+[2026-02-02 15:08:10] Notebooks: module_4
+[2026-02-02 15:08:10] ============================================================
+[2026-02-02 15:08:10] Starting: module_4
+[2026-02-02 15:24:52] Scheduler stopped by user (Interrupt Kernel)
+[2026-02-02 15:46:50] Scheduler started in continuous mode
+[2026-02-02 16:04:50] ============================================================
+[2026-02-02 16:04:50] Running scheduled tasks for hour 16:00
+[2026-02-02 16:04:50] Notebooks: module_4
+[2026-02-02 16:04:50] ============================================================
+[2026-02-02 16:04:50] Starting: module_4
