@@ -403,11 +403,35 @@ def send_file_slack(channel, df, filename, title=None, message=None):
     from slack_sdk import WebClient
     import tempfile
     import os
+    import re
     
     initialize_env()
     
     try:
         client = WebClient(token=os.environ["SLACK_TOKEN"])
+        
+        # Check if channel is a name (not an ID) - IDs start with C, G, D, or Z followed by alphanumeric
+        channel_id = channel
+        if not re.match(r'^[CGDZ][A-Z0-9]{8,}$', channel):
+            # Look up channel ID from name
+            try:
+                # Try public channels first
+                result = client.conversations_list(types="public_channel", limit=1000)
+                for ch in result.get('channels', []):
+                    if ch['name'] == channel or ch['name'] == channel.lstrip('#'):
+                        channel_id = ch['id']
+                        break
+                else:
+                    # Try private channels
+                    result = client.conversations_list(types="private_channel", limit=1000)
+                    for ch in result.get('channels', []):
+                        if ch['name'] == channel or ch['name'] == channel.lstrip('#'):
+                            channel_id = ch['id']
+                            break
+                print(f"  Resolved channel '{channel}' to ID: {channel_id}")
+            except Exception as lookup_err:
+                print(f"  Warning: Could not look up channel ID for '{channel}': {lookup_err}")
+                # Fall through and try with the original channel name
         
         # Save DataFrame to temp file
         with tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False) as tmp:
@@ -418,7 +442,7 @@ def send_file_slack(channel, df, filename, title=None, message=None):
         
         # Upload to Slack
         client.files_upload_v2(
-            channel=channel,
+            channel=channel_id,
             file=tmp_path,
             filename=filename,
             title=title or filename,
