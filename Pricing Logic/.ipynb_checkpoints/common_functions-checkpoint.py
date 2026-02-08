@@ -379,6 +379,91 @@ def send_text_slack(channel, text):
         raise e
 
 
+def send_file_slack(channel, df, filename, title=None, message=None):
+    """
+    Send a DataFrame as an Excel file to a Slack channel.
+    
+    This function saves the DataFrame to a temporary Excel file and uploads it to Slack.
+    The temporary file is automatically cleaned up after upload.
+    
+    Args:
+        channel (str): Slack channel name or ID
+        df (pandas.DataFrame): DataFrame to send as Excel file
+        filename (str): Name for the file in Slack (e.g., 'review_data.xlsx')
+        title (str, optional): Title displayed for the file in Slack
+        message (str, optional): Message to accompany the file upload
+    
+    Returns:
+        bool: True if upload succeeded, False otherwise
+    
+    Note: 
+        - This function automatically calls initialize_env() to set up the Slack token.
+        - Designed to be called AFTER send_text_slack for proper message ordering.
+    """
+    from slack_sdk import WebClient
+    import tempfile
+    import os
+    import re
+    
+    initialize_env()
+    
+    try:
+        client = WebClient(token=os.environ["SLACK_TOKEN"])
+        
+        # Check if channel is a name (not an ID) - IDs start with C, G, D, or Z followed by alphanumeric
+        channel_id = channel
+        if not re.match(r'^[CGDZ][A-Z0-9]{8,}$', channel):
+            # Look up channel ID from name
+            try:
+                # Try public channels first
+                result = client.conversations_list(types="public_channel", limit=1000)
+                for ch in result.get('channels', []):
+                    if ch['name'] == channel or ch['name'] == channel.lstrip('#'):
+                        channel_id = ch['id']
+                        break
+                else:
+                    # Try private channels
+                    result = client.conversations_list(types="private_channel", limit=1000)
+                    for ch in result.get('channels', []):
+                        if ch['name'] == channel or ch['name'] == channel.lstrip('#'):
+                            channel_id = ch['id']
+                            break
+                print(f"  Resolved channel '{channel}' to ID: {channel_id}")
+            except Exception as lookup_err:
+                print(f"  Warning: Could not look up channel ID for '{channel}': {lookup_err}")
+                # Fall through and try with the original channel name
+        
+        # Save DataFrame to temp file
+        with tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False) as tmp:
+            tmp_path = tmp.name
+        
+        # Write DataFrame to the temp file
+        df.to_excel(tmp_path, index=False)
+        
+        # Upload to Slack
+        client.files_upload_v2(
+            channel=channel_id,
+            file=tmp_path,
+            filename=filename,
+            title=title or filename,
+            initial_comment=message
+        )
+        print(f'File {filename} sent to Slack')
+        return True
+        
+    except Exception as e:
+        print(f'Failed to send file to Slack: {e}')
+        return False
+        
+    finally:
+        # Clean up temp file
+        try:
+            if 'tmp_path' in locals() and os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+        except:
+            pass
+
+
 def task_fail_slack_alert(context):
     """
     Send a formatted Slack alert when an Airflow task fails.
