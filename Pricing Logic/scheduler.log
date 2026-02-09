@@ -2714,3 +2714,36 @@ Traceback (most recent call last):
 [2026-02-09 15:08:59]   module_4: ✓ SUCCESS
 [2026-02-09 15:08:59] ============================================================
 
+[2026-02-09 16:02:59] ============================================================
+[2026-02-09 16:02:59] Running scheduled tasks for hour 16:00
+[2026-02-09 16:02:59] Notebooks: module_4
+[2026-02-09 16:02:59] ============================================================
+[2026-02-09 16:02:59] Starting: module_4
+[2026-02-09 16:05:34] SUCCESS: module_4 completed
+[2026-02-09 16:05:34] 
+============================================================
+[2026-02-09 16:05:34] SUMMARY for hour 16:00
+[2026-02-09 16:05:34]   module_4: ✓ SUCCESS
+[2026-02-09 16:05:34] ============================================================
+
+[2026-02-09 17:08:34] ============================================================
+[2026-02-09 17:08:34] Running scheduled tasks for hour 17:00
+[2026-02-09 17:08:34] Notebooks: module_3
+[2026-02-09 17:08:34] ============================================================
+[2026-02-09 17:08:34] Starting: module_3
+[2026-02-09 17:25:07] ERROR: module_3 failed with code 1
+[2026-02-09 17:25:07] STDERR: [NbConvertApp] Converting notebook /home/ec2-user/SageMaker/Pricing Runs/Prediction_Scripts_2/Happy_hour/git/Mustafa/Pricing Logic/modules/module_3_periodic_actions.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/ec2-user/anaconda3/envs/python3/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ec2-user/anaconda3/envs/python3/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launc
+[2026-02-09 17:25:12] Slack alert sent for module_3 failure
+[2026-02-09 17:25:12] 
+============================================================
+[2026-02-09 17:25:12] SUMMARY for hour 17:00
+[2026-02-09 17:25:12]   module_3: ✗ FAILED
+[2026-02-09 17:25:12] ============================================================
+
+[2026-02-09 17:25:15] Slack summary sent for hour 17
