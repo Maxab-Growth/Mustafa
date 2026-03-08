@@ -14,14 +14,26 @@
 WITH 
 -- Step 1: Get SKUs with sales in the last 120 days
 skus_with_sales AS (
+select product_id, case when cumulative_contribution > 0.8 then 'C' when cumulative_contribution > 0.4 then 'B' else 'A' end as abc_class
+from (
+select *,SUM(cntrb) OVER (ORDER BY cntrb DESC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_contribution
+from (
+select *,nmv/(sum(nmv)over(partition by null)) as cntrb
+from (
     SELECT DISTINCT
-        pso.product_id
+        pso.product_id,
+		sum(case when so.created_at::date > current_date - 60 then pso.total_price end) as nmv
     FROM product_sales_order pso
     JOIN sales_orders so ON so.id = pso.sales_order_id
-    WHERE so.created_at >= CURRENT_DATE - INTERVAL '120 days'
+    WHERE so.created_at >= date_trunc('month',CURRENT_DATE - INTERVAL '120 days')
         AND so.sales_order_status_id NOT IN (7, 12)
         AND so.channel IN ('telesales', 'retailer')
         AND pso.purchased_item_count <> 0
+		group by all
+)	
+)
+)
+order by cumulative_contribution
 ),
 
 -- Step 2: Get current prices from cohort_product_packing_units for cohort 700
@@ -51,6 +63,8 @@ bensoliman_products AS (
 SELECT DISTINCT
     p.id AS product_id,
     CONCAT(p.name_ar,' ',p.size,' ',prod_units.name_ar) AS product_name,
+	cat.name_ar AS cat,
+    b.name_ar AS brand,
     p.size AS size,
     prod_units.name_ar AS product_unit,
     pu.packing_unit_id,
@@ -58,8 +72,7 @@ SELECT DISTINCT
     pu.basic_unit_count,
     cp.current_price,
     CASE WHEN bs.product_id IS NOT NULL THEN 1 ELSE 0 END AS ben_soliman,
-    cat.name_ar AS cat,
-    b.name_ar AS brand
+	sws.abc_class 
 FROM skus_with_sales sws
 JOIN products p ON p.id = sws.product_id
 JOIN PACKING_UNIT_PRODUCTS pu ON pu.product_id = sws.product_id 
@@ -70,5 +83,5 @@ JOIN categories cat ON cat.id = p.category_id
 JOIN current_prices cp ON cp.product_id = sws.product_id 
     AND cp.packing_unit_id = pu.packing_unit_id
 LEFT JOIN bensoliman_products bs ON bs.product_id = p.id
-ORDER BY p.id, pu.packing_unit_id
+ORDER BY abc_class,p.id, pu.packing_unit_id
 
