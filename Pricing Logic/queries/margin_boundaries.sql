@@ -130,7 +130,7 @@ quarter_percentiles AS (
         warehouse_id,
         MIN(CASE WHEN cum_weight >= total_weight * 0.10 THEN daily_margin END) AS MIN_BOUNDARY,
         MIN(CASE WHEN cum_weight >= total_weight * 0.50 THEN daily_margin END) AS MEDIAN_BM,
-        MIN(CASE WHEN cum_weight >= total_weight * 0.90 THEN daily_margin END) AS MAX_BOUNDARY
+        MIN(CASE WHEN cum_weight >= total_weight * 0.98 THEN daily_margin END) AS MAX_BOUNDARY
     FROM boundary_ordered
     WHERE data_points >= 5
     GROUP BY product_id, warehouse_id
