@@ -1,16 +1,9 @@
-*.csv
-*.xlsx
-*.parquet
-*.pkl
-*.pickle
-*.zip
-*.gz
-data/
-*.ipynb_checkpoints/
-__pycache__/
+# Large files to always ignore
 Main_V3_HH.xlsx
 Main_HH.xlsx
-*.xlsx
 check.xlsx
 pricing_aggregate_analysis.xlsx
-*.xlsx
+
+# System/cache
+__pycache__/
+*.ipynb_checkpoints/
