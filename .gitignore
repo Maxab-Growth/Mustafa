@@ -1,0 +1,16 @@
+*.csv
+*.xlsx
+*.parquet
+*.pkl
+*.pickle
+*.zip
+*.gz
+data/
+*.ipynb_checkpoints/
+__pycache__/
+Main_V3_HH.xlsx
+Main_HH.xlsx
+*.xlsx
+check.xlsx
+pricing_aggregate_analysis.xlsx
+*.xlsx
