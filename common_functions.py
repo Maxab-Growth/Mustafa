@@ -1020,3 +1020,31 @@ def processing_jobs(input_s3, output_s3, job_name,role=None, image=None, instanc
     }
     
     return PROCESSING_JOB_CONFIG
+
+
+def cleanup_upload_files(*folders):
+    """
+    Remove all .xlsx files from the specified upload folders.
+    Call after a successful push to free disk space.
+
+    Args:
+        *folders: One or more folder paths to clean (e.g., 'uploads', 'manual')
+    
+    Returns:
+        int: Total number of files removed
+    """
+    import os
+    import glob
+    total_removed = 0
+    for folder in folders:
+        if not os.path.isdir(folder):
+            continue
+        for f in glob.glob(os.path.join(folder, '*.xlsx')):
+            try:
+                os.remove(f)
+                total_removed += 1
+            except Exception:
+                pass
+    if total_removed > 0:
+        print(f"  Cleanup: removed {total_removed} temporary .xlsx files from {len(folders)} folder(s)")
+    return total_removed
