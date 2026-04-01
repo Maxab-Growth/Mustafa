@@ -1,0 +1,2 @@
+SELECT query_id as maxab_product_id, app as source_app, materialized_views.competitors_mapping_fixed.match as scrapped_product_name_ar 
+FROM materialized_views.competitors_mapping_fixed
