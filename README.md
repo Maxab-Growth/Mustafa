@@ -9,11 +9,11 @@ Automated SKU-level pricing engine for **MaxAB Egypt** — managing prices, cart
 | Module | File | Schedule (Cairo) | Purpose |
 |--------|------|-------------------|---------|
 | Market Data | `market_data_module.ipynb` | Daily, pre-pipeline | Collects competitor/market prices; builds margin tiers and brand fallbacks |
-| Data Extraction | `data_extraction.ipynb` | Daily, ~5:30 AM | Builds wide warehouse-SKU dataset from 20+ Snowflake queries |
-| Module 2 — Initial Price Push | `module_2_initial_price_push.ipynb` | Daily, 6:00 AM | Baseline price & cart rule reset using performance + market tiers |
-| Module 3 — Periodic Actions | `module_3_periodic_actions.ipynb` | 12 PM, 3 PM, 6 PM, 9 PM, 12 AM | UTH-based intraday price/discount/cart adjustments |
-| Module 4 — Hourly Updates | `module_4_hourly_updates.ipynb` | 1-2 PM, 4-5 PM, 7-8 PM, 10-11 PM, 12 AM, 3 AM | WAC-driven and growth-based hourly price tweaks |
-| Module 5 — New Intros & Invisible | `module_5_new_intros_invisible.ipynb` | Scheduled standalone | First-time pricing for new and invisible SKUs |
+| Data Extraction | `data_extraction.ipynb` | Daily, 8:00 AM | Builds wide warehouse-SKU dataset from 20+ Snowflake queries |
+| Module 2 — Initial Price Push | `module_2_initial_price_push.ipynb` | Daily, 8:00 AM (after extraction) | Baseline price & cart rule reset using performance + market tiers |
+| Module 3 — Periodic Actions | `module_3_periodic_actions.ipynb` | 12 PM, 5 PM, 11 PM | UTH-based intraday price/discount/cart adjustments |
+| Module 4 — Hourly Updates | `module_4_hourly_updates.ipynb` | 1–3 AM, 9–11 AM, 1–3 PM, 4–10 PM | WAC-driven and growth-based hourly price tweaks |
+| Module 5 — New Intros & Invisible | `module_5_new_intros_invisible.ipynb` | 4:00 PM | First-time pricing for new and invisible SKUs |
 | QD Handler | `qd_handler.ipynb` | Called by Module 3 | Quantity discount lifecycle (deactivate → create 3-tier QDs) |
 | SKU Discount Handler | `sku_discount_handler.ipynb` | Called by Module 3 | Per-SKU special discount lifecycle via S3 bulk upload |
 | Queries Module | `queries_module.ipynb` | Shared library | Centralized data access layer (Snowflake, PostgreSQL, Sheets) |
@@ -86,30 +86,26 @@ graph TB
 
 ```mermaid
 flowchart LR
-    A["05:30<br/>Market Data +<br/>Data Extraction"] --> B["06:00<br/>Module 2<br/>Initial Price Push"]
-    B --> C["12:00<br/>Module 3<br/>Periodic #1"]
-    C --> D["13:00–14:00<br/>Module 4<br/>Hourly"]
-    D --> E["15:00<br/>Module 3<br/>Periodic #2"]
-    E --> F["16:00–17:00<br/>Module 4<br/>Hourly"]
-    F --> G["18:00<br/>Module 3<br/>Periodic #3"]
-    G --> H["19:00–20:00<br/>Module 4<br/>Hourly"]
-    H --> I["21:00<br/>Module 3<br/>Periodic #4"]
-    I --> J["22:00–23:00<br/>Module 4<br/>Hourly"]
-    J --> K["00:00<br/>Module 3<br/>Periodic #5"]
-    K --> L["03:00<br/>Module 4<br/>Hourly"]
+    A["01:00–03:00<br/>Module 4<br/>Hourly"] --> B["08:00<br/>Data Extraction +<br/>Module 2"]
+    B --> C["09:00–11:00<br/>Module 4<br/>Hourly + Treasure Hunt"]
+    C --> D["12:00<br/>Module 3<br/>Periodic #1"]
+    D --> E["13:00–14:00<br/>Module 4<br/>Hourly"]
+    E --> F["15:00<br/>Module 4<br/>+ Savvy Update"]
+    F --> G["16:00<br/>Module 5 +<br/>Module 4"]
+    G --> H["17:00<br/>Module 3<br/>Periodic #2"]
+    H --> I["18:00–22:00<br/>Module 4<br/>Hourly"]
+    I --> J["23:00<br/>Module 3<br/>Periodic #3"]
 
-    style A fill:#2563eb,color:#fff
-    style B fill:#7c3aed,color:#fff
-    style C fill:#059669,color:#fff
-    style E fill:#059669,color:#fff
-    style G fill:#059669,color:#fff
-    style I fill:#059669,color:#fff
-    style K fill:#059669,color:#fff
-    style D fill:#d97706,color:#fff
+    style A fill:#d97706,color:#fff
+    style B fill:#2563eb,color:#fff
+    style C fill:#d97706,color:#fff
+    style D fill:#059669,color:#fff
+    style E fill:#d97706,color:#fff
     style F fill:#d97706,color:#fff
-    style H fill:#d97706,color:#fff
-    style J fill:#d97706,color:#fff
-    style L fill:#d97706,color:#fff
+    style G fill:#8b5cf6,color:#fff
+    style H fill:#059669,color:#fff
+    style I fill:#d97706,color:#fff
+    style J fill:#059669,color:#fff
 ```
 
 ---
@@ -130,7 +126,7 @@ Builds a comprehensive warehouse × SKU dataset by joining 20+ Snowflake queries
 
 ### 3. Module 2 — Initial Price Push
 
-**File:** `modules/module_2_initial_price_push.ipynb` | **Schedule:** Daily 6:00 AM Cairo
+**File:** `modules/module_2_initial_price_push.ipynb` | **Schedule:** Daily 8:00 AM Cairo
 
 Performs the baseline price and cart rule reset each morning. Reads from `Pricing_data_extraction` and walks a decision tree per warehouse-SKU:
 
@@ -157,7 +153,7 @@ Target prices are computed from market/margin tier ladders in discrete steps (mi
 
 ### 4. Module 3 — Periodic Actions
 
-**File:** `modules/module_3_periodic_actions.ipynb` | **Schedule:** 12 PM, 3 PM, 6 PM, 9 PM, 12 AM
+**File:** `modules/module_3_periodic_actions.ipynb` | **Schedule:** 12 PM, 5 PM, 11 PM
 
 The main intraday engine. Compares up-till-hour (UTH) quantity and retailer counts against dynamic benchmarks (P80 qty × quarterly contribution × hour contribution for quantity; P70 for retailers). Classifies each SKU as **Growing**, **On Track**, or **Dropping**.
 
@@ -201,9 +197,9 @@ flowchart TD
 
 ### 5. Module 4 — Hourly Updates
 
-**File:** `modules/module_4_hourly_updates.ipynb` | **Schedule:** Off-Module-3 hours
+**File:** `modules/module_4_hourly_updates.ipynb` | **Schedule:** 1–3 AM, 9–11 AM, 1–3 PM, 4–10 PM
 
-Runs between Module 3 windows for fine-grained adjustments. Uses ±1 standard deviation bands for status classification.
+Runs on all non-Module-3 hours for fine-grained adjustments. Uses ±1 standard deviation bands for status classification.
 
 | Trigger | Action |
 |---------|--------|
@@ -218,7 +214,7 @@ Runs between Module 3 windows for fine-grained adjustments. Uses ±1 standard de
 
 ### 6. Module 5 — New Intros & Invisible
 
-**File:** `modules/module_5_new_intros_invisible.ipynb` | **Schedule:** Standalone
+**File:** `modules/module_5_new_intros_invisible.ipynb` | **Schedule:** Daily 4:00 PM Cairo
 
 Handles SKUs that need first-time pricing: **new intros** (stock present, no cohort price or invisible packing units). Price is calculated as:
 
@@ -404,13 +400,13 @@ flowchart TD
         MD[market_data_module.ipynb]
     end
 
-    subgraph Daily["Daily Batch — 06:00"]
+    subgraph Daily["Daily Batch — 08:00"]
         DE[data_extraction.ipynb]
         PDE[(Pricing_data_extraction<br/>Snowflake table)]
         M2[Module 2<br/>Initial Price Push]
     end
 
-    subgraph Intraday["Intraday — 12:00–00:00"]
+    subgraph Intraday["Intraday — 09:00–23:00"]
         M3[Module 3<br/>Periodic Actions]
         M4[Module 4<br/>Hourly Updates]
         SKUD[SKU Discount Handler]
@@ -455,8 +451,8 @@ Central configuration lives in `config/pricing_config.py`. Key parameters:
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
-| `MODULE_2_RUN_TIME` | 06:00 | Daily baseline push (Cairo) |
-| `MODULE_3_RUN_TIMES` | 12, 15, 18, 21, 00 | Periodic action windows |
+| `MODULE_2_RUN_TIME` | 08:00 | Daily baseline push (Cairo) |
+| `MODULE_3_RUN_TIMES` | 12, 17, 23 | Periodic action windows |
 | `MIN_CART_RULE` | 2 | Absolute minimum cart (units) |
 | `MAX_CART_RULE` | 150 | Cart ceiling |
 | `MIN_PRICE_REDUCTION_PCT` | 0.25% | Smallest allowed price cut |
