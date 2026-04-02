@@ -17,12 +17,15 @@ import snowflake.connector
 SNOWFLAKE_WAREHOUSE = "COMPUTE_WH"
 
 
-def query_snowflake(query: str) -> pd.DataFrame:
+def query_snowflake(query: str, columns: list | None = None) -> pd.DataFrame:
     """
     Execute a SQL query against Snowflake and return results as a DataFrame.
 
     Connects using SNOWFLAKE_USERNAME, SNOWFLAKE_ACCOUNT, SNOWFLAKE_PASSWORD,
     and SNOWFLAKE_DATABASE environment variables (set by setup_environment_2).
+
+    If ``columns`` is provided, use it as DataFrame column names; otherwise use
+    Snowflake cursor descriptions (lowercased).
     """
     con = snowflake.connector.connect(
         user=os.environ["SNOWFLAKE_USERNAME"],
@@ -35,8 +38,11 @@ def query_snowflake(query: str) -> pd.DataFrame:
         cur.execute(f"USE WAREHOUSE {SNOWFLAKE_WAREHOUSE}")
         cur.execute(query)
         data = cur.fetchall()
-        columns = [desc[0].lower() for desc in cur.description]
-        df = pd.DataFrame(data, columns=columns)
+        if columns is not None:
+            df = pd.DataFrame(data, columns=columns)
+        else:
+            col_names = [desc[0].lower() for desc in cur.description]
+            df = pd.DataFrame(data, columns=col_names)
         for col in df.columns:
             if df[col].dtype == object:
                 try:
