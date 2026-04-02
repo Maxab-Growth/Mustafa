@@ -35,7 +35,6 @@ graph TB
         QM[Queries Module]
         MD[Market Data Module]
         CF[common_functions.py]
-        CFG[config/pricing_config.py]
     end
 
     subgraph Daily Pipeline
@@ -447,7 +446,7 @@ flowchart TD
 
 ## Configuration
 
-Central configuration lives in `config/pricing_config.py`. Key parameters:
+Key parameters (defined inline in each module):
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
@@ -476,27 +475,27 @@ ABC-class-specific settings:
 
 ```
 Mustafa/
-├── config/
-│   └── pricing_config.py          # Central configuration
+├── docs/                               # Per-module documentation
 ├── modules/
-│   ├── market_data_module.ipynb    # Competitor/market data
+│   ├── market_data_module.ipynb        # Competitor/market data
 │   ├── module_2_initial_price_push.ipynb
 │   ├── module_3_periodic_actions.ipynb
 │   ├── module_4_hourly_updates.ipynb
 │   ├── module_5_new_intros_invisible.ipynb
-│   ├── queries_module.ipynb        # Shared data access
-│   ├── qd_handler.ipynb            # Quantity discounts
-│   ├── sku_discount_handler.ipynb  # SKU special discounts
-│   ├── push_prices_handler.ipynb   # API push helper
+│   ├── queries_module.ipynb            # Shared data access
+│   ├── qd_handler.ipynb               # Quantity discounts
+│   ├── sku_discount_handler.ipynb      # SKU special discounts
+│   ├── push_prices_handler.ipynb       # API push helper
 │   └── push_cart_rules_handler.ipynb
-├── utils/
-│   ├── pricing_helpers.py          # Shared pricing utilities
-│   └── discount_api.py             # Discount API wrapper
-├── queries/                        # Standalone SQL files
-├── Mapping/                        # SKU mapping pipeline
-├── data_extraction.ipynb           # Daily data build
-├── scheduler.ipynb                 # Orchestrator
-├── common_functions.py             # AWS secrets, env init
+├── queries/                            # Standalone SQL files
+├── Mapping/                            # SKU mapping pipeline
+├── data_extraction.ipynb               # Daily data build
+├── scheduler.ipynb                     # Orchestrator
+├── common_functions.py                 # AWS secrets, env init
+├── setup_environment_2.py              # Environment + DB credentials
+├── cohort_700_sku_sheet_updater.ipynb  # Weekly Savvy sheet update
+├── treasure_hunt_scheduler.ipynb       # Treasure hunt pricing
+├── whole_sale_new_logic.ipynb          # Wholesale pricing
 └── README.md
 ```
 
