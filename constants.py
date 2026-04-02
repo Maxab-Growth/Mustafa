@@ -60,5 +60,16 @@ QD_WAREHOUSE_TAG_MAPPING = {
     703: 3309, 632: 3310, 797: 3311, 962: 3312,
 }
 
+# Main/general cohorts that mirror prices from custom cohorts
+# Format: main_cohort_id → custom_cohort_id (source of prices)
+MAIN_COHORT_MAPPING = {
+    695: 700,
+    61: 700,
+    699: 702,
+    697: 703,
+    698: 704,
+    696: 1123,
+}
+
 # Snowflake warehouse used for compute
 SNOWFLAKE_WAREHOUSE = "COMPUTE_WH"
