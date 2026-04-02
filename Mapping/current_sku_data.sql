@@ -79,4 +79,6 @@ JOIN product_units ON product_units.id = p.unit_id
 join current_prices cp on cp.product_id = p.id 
 join PACKING_UNITS pu on pu.id = cp.PACKING_UNIT_ID
 join current_stocks cs on p.id = cs.product_id
-join current_sales csa on csa.product_id = p.id
+left join current_sales csa on csa.product_id = p.id
+
+where stocks >0 or nmv > 0
