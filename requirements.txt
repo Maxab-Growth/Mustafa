@@ -1,0 +1,55 @@
+# Core
+pandas==2.2.1
+numpy>=1.26,<2
+pytz>=2024.1
+
+# Snowflake
+snowflake-connector-python==3.15.0
+snowflake-sqlalchemy>=1.5
+
+# PostgreSQL
+psycopg2-binary>=2.9
+
+# AWS
+boto3>=1.24
+
+# Google
+gspread==5.9.0
+gspread-dataframe>=3.6
+oauth2client>=4.1
+google-cloud-bigquery>=3.0
+db-dtypes>=1.1
+
+# Excel
+openpyxl>=3.1
+xlsxwriter>=3.1
+
+# HTTP / API
+requests>=2.31
+aiohttp>=3.9
+
+# Slack
+slack-sdk>=3.21
+
+# SQL
+sqlalchemy==1.4.46
+keyring==23.11.0
+
+# Data science
+polars>=0.20
+statsmodels>=0.14
+scikit-learn>=1.4
+tqdm>=4.66
+
+# Visualization (used in some notebooks)
+matplotlib>=3.8
+seaborn>=0.13
+
+# Notebook execution (scheduler)
+nbconvert>=7.0
+jupyter>=1.0
+import-ipynb>=0.1
+
+# SKU Mapping pipeline
+rapidfuzz>=3.6
+wn>=1.1

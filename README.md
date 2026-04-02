@@ -475,7 +475,6 @@ ABC-class-specific settings:
 
 ```
 Mustafa/
-├── docs/                               # Per-module documentation
 ├── modules/
 │   ├── market_data_module.ipynb        # Competitor/market data
 │   ├── module_2_initial_price_push.ipynb
@@ -487,15 +486,20 @@ Mustafa/
 │   ├── sku_discount_handler.ipynb      # SKU special discounts
 │   ├── push_prices_handler.ipynb       # API push helper
 │   └── push_cart_rules_handler.ipynb
-├── queries/                            # Standalone SQL files
+├── docs/                               # Per-module documentation
+├── queries/                            # Standalone SQL reference queries
 ├── Mapping/                            # SKU mapping pipeline
+├── archive/                            # Inactive/legacy notebooks
+├── constants.py                        # Shared constants (warehouses, cohorts, channels)
+├── db.py                               # Shared query_snowflake() implementation
+├── common_functions.py                 # AWS secrets, Slack, Snowflake upload
+├── setup_environment_2.py              # Environment + DB credentials
 ├── data_extraction.ipynb               # Daily data build
 ├── scheduler.ipynb                     # Orchestrator
-├── common_functions.py                 # AWS secrets, env init
-├── setup_environment_2.py              # Environment + DB credentials
 ├── cohort_700_sku_sheet_updater.ipynb  # Weekly Savvy sheet update
 ├── treasure_hunt_scheduler.ipynb       # Treasure hunt pricing
 ├── whole_sale_new_logic.ipynb          # Wholesale pricing
+├── requirements.txt                    # Python dependencies
 └── README.md
 ```
 

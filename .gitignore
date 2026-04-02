@@ -1,10 +1,29 @@
-# Large files to always ignore
-Main_V3_HH.xlsx
-Main_HH.xlsx
-check.xlsx
-pricing_aggregate_analysis.xlsx
+# Data files
+*.xlsx
+*.csv
+*.log
+*.pdf
 
 # System/cache
 __pycache__/
+.ipynb_checkpoints/
 *.ipynb_checkpoints/
-*.xlsx
+
+# Runtime output directories
+output/
+uploads/
+manual/
+qd_uploads/
+HH_Sheets/
+HH_temp_files/
+BFD_HH_sheets/
+QD_TAGS/
+WS_tags/
+dynamic_tags/
+Uploads/
+Min_max_data/
+
+# Environment
+.Renviron
+*.json
+!package.json
