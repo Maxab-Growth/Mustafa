@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Intraday UTH-based pricing engine running **5× daily** (12 PM, 3 PM, 6 PM, 9 PM, 12 AM Cairo). Compares real-time UTH (Up-To-Hour) performance against dynamic benchmarks and decides price changes, cart adjustments, SKU discounts, and quantity discounts. The primary responsive lever throughout the trading day.
+Intraday UTH-based pricing engine running **3× daily** (12 PM, 5 PM, 11 PM Cairo). Compares real-time UTH (Up-To-Hour) performance against dynamic benchmarks and decides price changes, cart adjustments, SKU discounts, and quantity discounts. The primary responsive lever throughout the trading day.
 
 ---
 
@@ -181,10 +181,8 @@ flowchart LR
 | Run | Time (Cairo) |
 |-----|-------------|
 | 1 | 12:00 PM |
-| 2 | 3:00 PM |
-| 3 | 6:00 PM |
-| 4 | 9:00 PM |
-| 5 | 12:00 AM |
+| 2 | 5:00 PM |
+| 3 | 11:00 PM |
 
 ---
 

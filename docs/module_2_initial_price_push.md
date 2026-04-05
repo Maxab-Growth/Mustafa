@@ -49,7 +49,7 @@ flowchart TD
     TREAT_CRIT --> APPLY
     PRICE_ACTION --> APPLY[apply_price_action\nTier ladders + margin% fallback]
     APPLY --> MKT_SIG{Market signal override?\ndata_points ≥ 10\nvolatility ≤ 5%\nuptrend}
-    MKT_SIG -- Yes --> MKT_BOOST["hold → increase\nor increase → 2 steps\nmarket boost tag"]
+    MKT_SIG -- Yes --> MKT_BOOST["yesterday above → increase\nincrease → 2 steps + above-market fallback\nmarket boost tag"]
     MKT_SIG -- No --> CART_NORMAL["get_initial_cart_rule\npercentile-based"]
     MKT_BOOST --> CART_NORMAL
     CART_NORMAL --> FINAL
@@ -101,13 +101,13 @@ flowchart LR
     D --> E
     E --> F[Discrete price ladder\nMin step: 0.25 EGP]
     F --> G[find_next_price_above\nfind_next_price_below]
-    G --> H[Ceiling: all_time_high_margin]
+    G --> H[No ceiling - above-market fallback]
 ```
 
 - Prices move on discrete ladders: market tiers first, then internal margin tiers
 - Tiers subdivided when gap exceeds 30% of `target_margin`
 - Minimum step size: **0.25 EGP**
-- Increases respect `all_time_high_margin` ceiling
+- No ceiling cap on increases — when all tiers exhausted, above-market fallback kicks in (avg margin step → 20% target margin → +1% bump)
 
 ---
 
@@ -128,6 +128,7 @@ flowchart LR
 | `get_enriched_margin_tiers` | Margin tiers with interpolated steps |
 | `subdivide_tiers` | Splits tier gaps exceeding 30% of target margin |
 | `get_margin_increase_pct` | Determines margin % step for increase actions |
+| `get_above_market_price` | Fallback price when tier ladders exhausted (avg margin step / 20% target / +1%) |
 
 ---
 
@@ -159,7 +160,7 @@ flowchart LR
 | `MAX_CART_RULE` | 500 | Maximum allowed cart rule |
 | `MIN_PRICE_CHANGE_EGP` | 0.25 | Smallest allowed price change |
 | Tier subdivision threshold | 30% of `target_margin` | Max gap before tiers are subdivided |
-| Market signal: min data points | 10 | Required for market signal override |
+| Market signal: min data points | 10 | Required for market signal override (yesterday above on track triggers hold→increase) |
 | Market signal: max volatility | 5% | Volatility ceiling for signal eligibility |
 
 ---

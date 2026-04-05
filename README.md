@@ -17,6 +17,7 @@ Automated SKU-level pricing engine for **MaxAB Egypt** — managing prices, cart
 | QD Handler | `qd_handler.ipynb` | Called by Module 3 | Quantity discount lifecycle (deactivate → create 3-tier QDs) |
 | SKU Discount Handler | `sku_discount_handler.ipynb` | Called by Module 3 | Per-SKU special discount lifecycle via S3 bulk upload |
 | Queries Module | `queries_module.ipynb` | Shared library | Centralized data access layer (Snowflake, PostgreSQL, Sheets) |
+| Manual Price Push | `manual_price_push.ipynb` | On-demand | Manual price overrides using market data or fixed prices |
 
 ---
 
@@ -51,6 +52,7 @@ graph TB
 
     subgraph Standalone
         M5[Module 5 — New Intros & Invisible]
+        MP[Manual Price Push]
     end
 
     subgraph Targets
@@ -73,6 +75,7 @@ graph TB
     M3 -->|cart → prices → discounts| API
     M4 -->|prices + cart rules| API
     M5 -->|per-cohort Excel| API
+    MP -->|per-cohort Excel| API
     QD -->|Excel upload| API
     SKU -->|S3 bulk upload| S3
     S3 --> API
@@ -148,7 +151,7 @@ flowchart TD
     OVERRIDE --> PUSH[Push cart rules → then prices<br/>per cohort via API]
 ```
 
-Target prices are computed from market/margin tier ladders in discrete steps (minimum 0.25 EGP). Fixed price and cart overrides from Google Sheets are applied last. Push order is always **cart rules first, then prices**.
+Target prices are computed from market/margin tier ladders in discrete steps (minimum 0.25 EGP). No ceiling cap on price increases — prices can step beyond the top of the tier ladder via above-market fallback (avg margin step / 20% target margin / +1% bump). Market signal overrides can turn a hold into an increase when yesterday's status is above on track and the market is trending up. Fixed price and cart overrides from Google Sheets are applied last. Push order is always **cart rules first, then prices**.
 
 ### 4. Module 3 — Periodic Actions
 
@@ -282,6 +285,17 @@ MaxAB organizes Egypt into regional cohorts, each mapped to one or more physical
 | Upper Egypt — Assiut | 1124 | Assiut FC |
 | Upper Egypt — Sohag | 1125 | Sohag |
 | Upper Egypt — Beni Suef | 1126 | Bani Sweif |
+
+**Main/General Cohort Mirroring:** Prices pushed to custom cohorts are automatically mirrored to their main/general counterparts by the push handler:
+
+| Main Cohort | Mirrors From |
+|-------------|-------------|
+| 695 | 700 (Cairo) |
+| 61 | 700 (Cairo) |
+| 699 | 702 (Alexandria) |
+| 697 | 703 (Delta West) |
+| 698 | 704 (Delta East) |
+| 696 | 1123 (Upper Egypt - Menya) |
 
 ### WAC (Weighted Average Cost)
 
@@ -499,6 +513,7 @@ Mustafa/
 ├── cohort_700_sku_sheet_updater.ipynb  # Weekly Savvy sheet update
 ├── treasure_hunt_scheduler.ipynb       # Treasure hunt pricing
 ├── whole_sale_new_logic.ipynb          # Wholesale pricing
+├── manual_price_push.ipynb          # Manual price overrides tool
 ├── requirements.txt                    # Python dependencies
 └── README.md
 ```
