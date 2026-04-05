@@ -74,11 +74,11 @@ flowchart LR
 
 | Status | Condition |
 |--------|-----------|
-| Growing | UTH metric > target + (STD_THRESHOLD × std) |
-| On Track | Within ± STD_THRESHOLD × std of target |
-| Dropping | UTH metric < target − (STD_THRESHOLD × std) |
+| Growing | `ratio > 1.1` (UTH metric vs target) |
+| On Track | `0.9 ≤ ratio ≤ 1.1` |
+| Dropping | `ratio < 0.9` |
 
-Standard deviation: `std_daily_240d` scaled by UTH% or last-hour%.
+**Fixed ratio thresholds** (0.9 / 1.1), aligned with Module 3 — not ±1 standard deviation bands. Ratios compare realized UTH quantity or retailers to the same dynamic targets Module 3 uses.
 
 ---
 
@@ -102,7 +102,7 @@ flowchart LR
 |----------|-------------|
 | Main hourly engine | Loads data, classifies eligibility (A/B/C), applies price action per condition |
 | `smooth_price_increase` | Halfway-to-next-tier with margin clamping and 0.25 EGP rounding |
-| Status classifier | ± STD_THRESHOLD around target using scaled `std_daily_240d` |
+| Status classifier | Fixed ratio thresholds (0.9 / 1.1) vs UTH target, aligned with Module 3 |
 | WAC path handler | Restores margin vs new WAC to at least `margin_tier_1`; prefers market prices |
 | Growth path handler | Retailers growing → smooth increase; qty growing → cart + price; low stock → cap cart |
 | Commercial min handler | Bumps price to `commercial_min_price` |
@@ -143,8 +143,8 @@ flowchart LR
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
-| `STD_THRESHOLD` | 1 | Standard deviations for status classification |
-| `MIN_DROPPING_THRESHOLD` | 1 | Minimum threshold for dropping status |
+| `UTH_GROWING_THRESHOLD` | 1.1 | Ratio above target → Growing (aligned with Module 3) |
+| `UTH_DROPPING_THRESHOLD` | 0.90 | Ratio below target → Dropping (aligned with Module 3) |
 | `LOW_STOCK_DOH_THRESHOLD` | 1 | DOH threshold for low stock path |
 | `M3_COOLDOWN_HOURS` | 2 | Hours to wait after M3 action |
 | WAC lift threshold | 0.5% (1.005×) | Minimum WAC increase to trigger action |

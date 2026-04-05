@@ -65,9 +65,9 @@ flowchart TD
     GR_DISC --> GR_PRICE{"qty_ratio > 1.2?"}
     GR_PRICE -- Yes --> GR_UP["Price step up"]
     GR_PRICE -- No --> GR_HOLD2[Hold price]
-    GR_UP --> GR_CART{"Qty spikes vs\nretailers?"}
+    GR_UP --> GR_CART{"qty_per_retailer_ratio\n> 1.3?"}
     GR_HOLD2 --> GR_CART
-    GR_CART -- "Qty ≫ Retailers" --> GR_TIGHTEN["Cart tightening\nby percentile"]
+    GR_CART -- Yes --> GR_TIGHTEN["Cart tightening\nby percentile"]
     GR_CART -- No --> POST
     GR_TIGHTEN --> POST
 
@@ -99,7 +99,7 @@ flowchart TD
 ```mermaid
 flowchart LR
     A["p80_daily_240d × qtr_cntrb × uth_cntrb"] --> B["qty_target = max(result, turnover_target, 4)"]
-    C["p70_retailers × min(in_stock_cntrb_ret, avg_uth_pct)"] --> D["retailer_target = max(result, 2)"]
+    C["p80_daily_retailers_240d × min(in_stock_cntrb_ret, avg_uth_pct)"] --> D["retailer_target = max(result, 2)"]
 
     B --> E["qty_ratio = uth_qty / qty_target"]
     D --> F["retailer_ratio = uth_retailers / retailer_target"]
@@ -112,7 +112,7 @@ flowchart LR
 |-----------|---------|
 | `uth_cntrb` | `min(in_stock_contribution_qty, avg_uth_pct)` |
 | `qty_target` | `max(p80_daily_240d × qtr_cntrb × uth_cntrb, turnover_target, 4)` |
-| `retailer_target` | `max(p70_retailers × min(in_stock_cntrb_ret, avg_uth_pct), 2)` |
+| `retailer_target` | `max(p80_daily_retailers_240d × min(in_stock_cntrb_ret, avg_uth_pct), 2)` |
 | `qty_ratio` | `uth_qty / qty_target` |
 | `retailer_ratio` | `uth_retailers / retailer_target` |
 | Growing | ratio > 1.1 |

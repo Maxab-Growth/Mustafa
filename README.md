@@ -157,7 +157,7 @@ Target prices are computed from market/margin tier ladders in discrete steps (mi
 
 **File:** `modules/module_3_periodic_actions.ipynb` | **Schedule:** 12 PM, 5 PM, 11 PM
 
-The main intraday engine. Compares up-till-hour (UTH) quantity and retailer counts against dynamic benchmarks (P80 qty × quarterly contribution × hour contribution for quantity; P70 for retailers). Classifies each SKU as **Growing**, **On Track**, or **Dropping**.
+The main intraday engine. Compares up-till-hour (UTH) quantity and retailer counts against dynamic benchmarks (P80 for both quantity and retailers: daily benchmark × quarterly contribution × hour contribution, with the same P80 lookback window). Classifies each SKU as **Growing**, **On Track**, or **Dropping**.
 
 ```mermaid
 flowchart TD
@@ -170,7 +170,7 @@ flowchart TD
     GR --> GR1[Remove highest-contributing<br/>discount tier]
     GR --> GR2{qty_ratio > 1.2?}
     GR2 -->|Yes| GR3[Price step up]
-    GR --> GR4[Cart tightening if<br/>qty spikes vs retailers]
+    GR --> GR4[Cart tightening if<br/>qty per retailer spikes<br/>ratio > 1.3]
 
     DR --> DR1[Activate SKU discount + QD]
     DR --> DR2[Cart increase ~25%]
@@ -201,7 +201,7 @@ flowchart TD
 
 **File:** `modules/module_4_hourly_updates.ipynb` | **Schedule:** 1–3 AM, 9–11 AM, 1–3 PM, 4–10 PM
 
-Runs on all non-Module-3 hours for fine-grained adjustments. Uses ±1 standard deviation bands for status classification.
+Runs on all non-Module-3 hours for fine-grained adjustments. Uses fixed ratio thresholds (0.9/1.1), aligned with Module 3.
 
 | Trigger | Action |
 |---------|--------|
@@ -324,7 +324,7 @@ graph LR
 
 ### UTH (Up-Till-Hour) Performance
 
-Cumulative sales metrics (quantity sold, unique retailers) from midnight to the current hour, compared against dynamic benchmarks. Benchmarks combine historical P80 quantity × quarterly seasonality × hourly distribution patterns. This drives all Module 3 and Module 4 decisions.
+Cumulative sales metrics (quantity sold, unique retailers) from midnight to the current hour, compared against dynamic benchmarks. Benchmarks use **P80 for both quantity and retailers**, combined with quarterly seasonality and hourly distribution patterns. This drives all Module 3 and Module 4 decisions.
 
 ### Performance Statuses
 
@@ -470,8 +470,7 @@ Key parameters (defined inline in each module):
 | `MAX_CART_RULE` | 150 | Cart ceiling |
 | `MIN_PRICE_REDUCTION_PCT` | 0.25% | Smallest allowed price cut |
 | `ON_TRACK_THRESHOLD` | ±10% | Band for "On Track" status |
-| `P80_BENCHMARK_DAYS` | 240 | Lookback for qty benchmarks |
-| `P70_RETAILER_DAYS` | 240 | Lookback for retailer benchmarks |
+| `P80_BENCHMARK_DAYS` | 240 | Lookback for quantity and retailer benchmarks (P80, shared window) |
 | `HOURLY_PATTERN_DAYS` | 120 | Lookback for hourly distributions |
 | `TIMEZONE` | Africa/Cairo | All schedules in Cairo time |
 
