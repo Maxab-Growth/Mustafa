@@ -105,7 +105,7 @@ flowchart LR
 | Status classifier | Fixed ratio thresholds (0.9 / 1.1) vs UTH target, aligned with Module 3 |
 | WAC path handler | Restores margin vs new WAC to at least `margin_tier_1`; prefers market prices |
 | Growth path handler | Retailers growing → smooth increase; qty growing → cart + price; low stock → cap cart |
-| Commercial min handler | Bumps price to `commercial_min_price` |
+| Commercial min handler | Bumps price to `commercial_min_price` (constraints loaded fresh each run via `get_commercial_min_prices()`, not from the morning extraction snapshot) |
 
 ---
 
@@ -115,6 +115,7 @@ flowchart LR
 | Source | Data |
 |--------|------|
 | Snowflake — `Pricing_data_extraction` | Base SKU dataset |
+| Snowflake — `get_commercial_min_prices()` | Fresh commercial minimum prices from `finance.minimum_prices` each run |
 | Snowflake — UTH queries | Current-hour and last-hour performance |
 | Snowflake — Today's M3/M4 actions | For cooldown and cap enforcement |
 | Snowflake — Live WAC | Today's purchase-weighted average cost |
@@ -175,6 +176,6 @@ Runs on hours **between** Module 3 slots:
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `data_extraction`, `queries_module` (UTH, WAC, stocks), `setup_environment_2`, `common_functions` |
+| **Requires** | `data_extraction`, `queries_module` (UTH, WAC, stocks, `get_commercial_min_prices`), `setup_environment_2`, `common_functions` |
 | **Coordinates with** | `module_3_periodic_actions` (shared increase cap, cooldowns) |
 | **Archives to** | Snowflake |

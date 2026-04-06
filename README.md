@@ -261,7 +261,7 @@ Per-SKU "Special Discounts" lifecycle: deactivate existing → create new ones v
 
 Shared data access layer used by every module. Centralizes all external queries:
 
-- **Snowflake:** stocks, prices, WAC, cart rules, packing units, UTH performance, hourly distribution, stock snapshots, percentiles, quarterly contribution, target turnover
+- **Snowflake:** stocks, prices, WAC, cart rules, packing units, UTH performance, hourly distribution, stock snapshots, percentiles, quarterly contribution, target turnover, and **`get_commercial_min_prices()`** (live commercial minimum constraints from `finance.minimum_prices` for Module 3 and Module 4 each run)
 - **PostgreSQL (DWH):** last-hour performance
 - **Google Sheets:** fixed prices and cart rules (manual overrides)
 - **Retailer selection:** churned buyers, category buyers, out-of-cycle, view-no-orders, exclusion lists

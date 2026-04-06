@@ -144,6 +144,7 @@ flowchart LR
 | Source | Data |
 |--------|------|
 | Snowflake — `Pricing_data_extraction` | Base SKU dataset with market data, inventory, margins |
+| Snowflake — `get_commercial_min_prices()` | Fresh commercial minimum prices from `finance.minimum_prices` each run (replaces relying on the morning extraction snapshot for this constraint) |
 | Snowflake — UTH queries | Today's cumulative performance (excl. current hour) |
 | Snowflake — Previous actions | Today's M3 + M4 actions for cap enforcement |
 | Google Sheets | Fixed price / cart overrides |
@@ -156,6 +157,12 @@ flowchart LR
 | SKU discount instructions | → `sku_discount_handler` |
 | QD instructions | → `qd_handler` |
 | Action archive | Snowflake + Slack |
+
+---
+
+## Commercial minimum prices
+
+Each run refreshes commercial minimum constraints from `finance.minimum_prices` via `queries_module.get_commercial_min_prices()`, instead of relying on the morning `Pricing_data_extraction` snapshot for those values. Post-processing price floor enforcement still uses `effective_tiers[0]` on the tier ladder as documented above.
 
 ---
 
@@ -190,7 +197,7 @@ flowchart LR
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `data_extraction` (Pricing_data_extraction), `queries_module` (UTH, stocks, percentiles), `setup_environment_2`, `common_functions` |
+| **Requires** | `data_extraction` (Pricing_data_extraction), `queries_module` (UTH, stocks, percentiles, `get_commercial_min_prices`), `setup_environment_2`, `common_functions` |
 | **Triggers** | `sku_discount_handler`, `qd_handler` |
 | **Coordinates with** | `module_4_hourly_updates` (shared increase cap) |
 | **Archives to** | Snowflake, Slack |

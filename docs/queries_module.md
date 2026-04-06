@@ -78,6 +78,7 @@ flowchart TD
 | `get_current_wac` | WAC from `finance.all_cogs` |
 | `get_current_cart_rules` | `MAX_PER_SALES_ORDER` with fallback cohort; groupby min |
 | `get_packing_units` | Preferred packing unit based on 60-day sales history |
+| `get_commercial_min_prices` | Fresh commercial minimum price constraints from `finance.minimum_prices` (consumed by Module 3 and Module 4 on every run) |
 
 ### 3. UTH / Hourly
 

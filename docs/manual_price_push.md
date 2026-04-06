@@ -10,7 +10,7 @@ On-demand tool for pushing manual price overrides for specific SKUs. Uses market
 
 ```mermaid
 flowchart TD
-    START[Define PUSH_LIST] --> LOAD[Load market data + WAC\n+ current prices + packing units\n+ target margins]
+    START[Define PUSH_LIST] --> LOAD[Load market data (v2) + WAC\n+ current prices + packing units\n+ target margins + stocks]
     LOAD --> LOOKUP["Build lookup table\nproduct × cohort with:\nmarket prices, WAC, target margin,\ncurrent price"]
     LOOKUP --> COMPUTE["For each product × cohort:\nresolve action → base price\n→ round to 0.25 EGP"]
     COMPUTE --> REVIEW["Review table:\nproduct, cohort, action,\ncurrent vs new price, margin"]
@@ -31,6 +31,8 @@ flowchart TD
 | `market_avg` | Average of min and max market prices | Cohort-specific market data |
 | `target_margin` | Price from brand-category target margin | WAC / (1 - margin) |
 | `<number>` | Fixed price in EGP (e.g. `115`) | User-provided |
+| `step_up` | Move price up one tier on the effective tier ladder (per cohort) | Tier ladder from market data + margins |
+| `step_down` | Move price down one tier on the effective tier ladder (per cohort) | Tier ladder from market data + margins |
 
 ---
 
@@ -42,6 +44,8 @@ PUSH_LIST = [
     (6935, 'market_50'),       # median market price across all cohorts
     (5678, 115),               # fixed 115 EGP across all cohorts
     (4444, 'target_margin'),   # brand-category target margin
+    (5555, 'step_up'),         # one tier up on ladder (per cohort)
+    (5556, 'step_down'),       # one tier down on ladder (per cohort)
 ]
 ```
 
@@ -53,17 +57,19 @@ Each product is automatically expanded to all 9 cohorts (700-1126). Market-based
 
 | Data | Source | Key |
 |------|--------|-----|
-| Market prices | `get_market_data()` via market_data_module | product_id, cohort_id |
+| Market prices | `get_market_data_v2()` via market_data_module | product_id, cohort_id |
 | WAC | `finance.all_cogs` (current date window) | product_id |
 | Current prices | `cohort_product_packing_units` + DBDP live slot | product_id, cohort_id |
 | Packing units | `packing_unit_products` (60d sales-weighted) | product_id |
 | Target margins | `performance.commercial_targets` (current/prev month) | brand, category |
+| Stocks | `get_current_stocks()` with parent → child warehouse fallback (same mapping as queries module) | product_id, warehouse — **only SKUs with stock > 0** are included in the push set |
 
 ---
 
 ## Push Behavior
 
 - Prices are pushed via `push_prices()` from `push_prices_handler.ipynb`
+- Only warehouse–SKU rows with **stock > 0** are considered; SKUs with no sellable stock are omitted from the push
 - Only SKUs where `new_price != current_price` are pushed
 - Main/general cohorts (695, 61, 699, 697, 698, 696) are auto-mirrored
 - Packing unit prices = base price x basic_unit_count
@@ -86,5 +92,5 @@ Each product is automatically expanded to all 9 cohorts (700-1126). Market-based
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `market_data_module` (market prices), `push_prices_handler` (API push), `db.py` (queries), `constants.py` (cohorts, warehouses) |
+| **Requires** | `market_data_module` (`get_market_data_v2`), `queries_module` (`get_current_stocks`), `push_prices_handler` (API push), `db.py` (queries), `constants.py` (cohorts, warehouses) |
 | **External** | MaxAB API (price push), Snowflake (WAC, prices, products) |
