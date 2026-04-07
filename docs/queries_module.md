@@ -79,6 +79,7 @@ flowchart TD
 | `get_current_cart_rules` | `MAX_PER_SALES_ORDER` with fallback cohort; groupby min |
 | `get_packing_units` | Preferred packing unit based on 60-day sales history |
 | `get_commercial_min_prices` | Fresh commercial minimum price constraints from `finance.minimum_prices` (consumed by Module 3 and Module 4 on every run) |
+| `get_commercial_price_ups` | Fetches price-up forecasts from `retool.stocking_request` (Snowflake). Filters: `price_up_date` within 2 weeks, diff 2%–50%. Used by `market_data_module_2` (induced price) and Module 2 (fallback signal). |
 
 ### 3. UTH / Hourly
 

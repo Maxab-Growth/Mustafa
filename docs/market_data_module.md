@@ -57,6 +57,7 @@ flowchart TD
 | Function | Description |
 |----------|-------------|
 | `get_market_data()` | End-to-end pipeline: query 3 sources → join → commercial groups (weighted median) → WAC/margins/targets → coverage filter → price analysis → step bounds → margin columns |
+| `get_market_data_v2()` | Same pipeline as `get_market_data()` with additional steps; includes **step 10d — commercial price-up induced prices**: for SKUs with upcoming price increases, an induced price `new_wac_p / (1 - target_margin)` is added to the `price_tiers` list |
 | `get_margin_tiers()` | Historical realized margins by warehouse × product. IQR-cleaned, time-weighted with exponential decay. Produces 8 tiers from `min_boundary` to `max_boundary` |
 | `get_brand_market_percentiles()` | Region × brand × category margin percentiles used as fallback when SKU-level data is missing |
 | `fill_brand_market_fallback()` | Maps brand percentiles to margin/price columns; sets `market_data_source` to `'sku'`, `'brand'`, or `null` |

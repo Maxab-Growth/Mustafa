@@ -165,6 +165,16 @@ flowchart LR
 
 ---
 
+## Market signal
+
+When no market signal exists from technical indicators, Module 2 falls back to commercial price-up data (from `get_commercial_price_ups` in the queries module):
+
+- **Diff below 5%:** no signal
+- **5–15%:** UPTREND
+- **15% or higher:** STRONG UPTREND
+
+---
+
 ## Dependencies
 
 | Direction | Module |
