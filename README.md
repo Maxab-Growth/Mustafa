@@ -8,7 +8,8 @@ Automated SKU-level pricing engine for **MaxAB Egypt** — managing prices, cart
 
 | Module | File | Schedule (Cairo) | Purpose |
 |--------|------|-------------------|---------|
-| Market Data | `market_data_module.ipynb` | Daily, pre-pipeline | Collects competitor/market prices; builds margin tiers and brand fallbacks |
+| Market Data V1 (legacy) | `market_data_module.ipynb` | Daily, pre-pipeline | Legacy competitor/market prices; builds margin tiers and brand fallbacks for DB storage |
+| Market Data V2 (price tiers) | `market_data_module_2.ipynb` | Daily, pre-pipeline | Dual output: runs V1 internally for legacy DB + adds V2 sorted price tiers per (product, region) |
 | Data Extraction | `data_extraction.ipynb` | Daily, 8:00 AM | Builds wide warehouse-SKU dataset from 20+ Snowflake queries |
 | Module 2 — Initial Price Push | `module_2_initial_price_push.ipynb` | Daily, 8:00 AM (after extraction) | Baseline price & cart rule reset using performance + market tiers |
 | Module 3 — Periodic Actions | `module_3_periodic_actions.ipynb` | 12 PM, 5 PM, 11 PM | UTH-based intraday price/discount/cart adjustments |
@@ -17,7 +18,7 @@ Automated SKU-level pricing engine for **MaxAB Egypt** — managing prices, cart
 | QD Handler | `qd_handler.ipynb` | Called by Module 3 | Quantity discount lifecycle (deactivate → create 3-tier QDs) |
 | SKU Discount Handler | `sku_discount_handler.ipynb` | Called by Module 3 | Per-SKU special discount lifecycle via S3 bulk upload |
 | Queries Module | `queries_module.ipynb` | Shared library | Centralized data access layer (Snowflake, PostgreSQL, Sheets) |
-| Manual Price Push | `manual_price_push.ipynb` | On-demand | Manual price overrides using market data or fixed prices |
+| Manual Price Push | `manual_price_push.ipynb` | On-demand | Manual price overrides with `step_up`/`step_down` actions; stock > 0 filter |
 
 ---
 
@@ -30,11 +31,13 @@ graph TB
         PG[(PostgreSQL DWH)]
         GS[Google Sheets]
         COMP[Competitor Sources]
+        CT[Commercial Tool]
     end
 
     subgraph Shared Layer
         QM[Queries Module]
-        MD[Market Data Module]
+        MD[Market Data V1]
+        MD2[Market Data V2]
         CF[common_functions.py]
     end
 
@@ -63,10 +66,11 @@ graph TB
 
     SF & PG & GS & COMP --> QM
     QM --> MD
-    QM & MD --> DE
+    MD & CT --> MD2
+    QM & MD2 --> DE
     DE -->|Pricing_data_extraction| M2
-    QM & MD --> M3
-    QM --> M4
+    QM & MD2 --> M3
+    QM & MD2 --> M4
     M3 --> QD
     M3 --> SKU
     QM --> M5
@@ -114,11 +118,33 @@ flowchart LR
 
 ## Module Details
 
-### 1. Market Data Module
+### 1. Market Data Module (V1 + V2)
 
-**File:** `modules/market_data_module.ipynb`
+**Files:** `modules/market_data_module.ipynb` (V1 legacy) · `modules/market_data_module_2.ipynb` (V2 price tiers)
 
-Collects competitor and market prices from three sources — **Ben Soliman**, **Marketplace**, and **Scraped** — all via Snowflake. Builds market price percentiles (P25, P50, P75, max) per SKU, constructs margin tier ladders, and computes brand-level fallbacks where SKU-level data is missing. Outputs market signals (uptrend / downtrend / stable) used by all downstream modules.
+The production entry point is **`market_data_module_2.ipynb`**, which runs V1 internally to preserve legacy DB output and layers V2 functions on top.
+
+**Dual output architecture:**
+
+| Function | Output | Consumer |
+|----------|--------|----------|
+| `get_market_data_legacy()` | Percentiles (P25/P50/P75/max) per SKU — same format as V1 | DB storage, backward-compatible consumers |
+| `get_market_data_v2()` | Sorted `price_tiers` list per `(product_id, region)` | All pricing modules via `effective_tiers` |
+
+**Data sources (V2):**
+
+- **Ben Soliman** — cleaned query with WAC sanity check on the lower track
+- **Marketplace** — competitor marketplace prices
+- **Scraped** — Speed = Alex only
+
+**V2 enrichment pipeline:**
+
+1. **Brand fallback** — Python-side fallback for SKUs without any market data, using brand-level aggregates
+2. **Single-price expansion** — when only one competitor price exists, synthetic tiers are generated
+3. **Step subdivision** — tiers are subdivided when the gap implies > 30% target margin
+4. **Commercial price-up induced prices** — sourced from `retool.stocking_request`, injected as additional tier anchors
+
+All downstream modules consume `effective_tiers` = `price_tiers` (from V2) > `margin_tier_prices` (from historical margins) > empty list.
 
 ### 2. Data Extraction
 
@@ -151,7 +177,19 @@ flowchart TD
     OVERRIDE --> PUSH[Push cart rules → then prices<br/>per cohort via API]
 ```
 
-Target prices are computed from market/margin tier ladders in discrete steps (minimum 0.25 EGP). No ceiling cap on price increases — prices can step beyond the top of the tier ladder via above-market fallback (avg margin step / 20% target margin / +1% bump). Market signal overrides can turn a hold into an increase when yesterday's status is above on track and the market is trending up. Fixed price and cart overrides from Google Sheets are applied last. Push order is always **cart rules first, then prices**.
+Target prices are computed from `effective_tiers` in discrete steps (minimum 0.25 EGP). No ATH ceiling cap — prices can step beyond the top of the tier ladder via `get_above_market_price()` (avg margin step / 20% target margin / +1% bump). Market signal: a hold is upgraded to an increase when yesterday's status is **above on track** and the market is trending up.
+
+**Commercial price-up fallback:** when no market signal is available, the commercial price-up percentage from `retool.stocking_request` drives a tiered signal:
+
+| Price-up % | Signal |
+|------------|--------|
+| < 5% | None |
+| 5–15% | UPTREND |
+| ≥ 15% | STRONG UPTREND |
+
+**Above-market fallback:** when `effective_tiers` are exhausted, `get_above_market_price()` computes the next price as avg margin step / 20% target margin / +1% bump.
+
+Fixed price and cart overrides from Google Sheets are applied last. Push order is always **cart rules first, then prices**.
 
 ### 4. Module 3 — Periodic Actions
 
@@ -195,13 +233,20 @@ flowchart TD
 
 **Daily caps:** max 3 price reductions per SKU; shared increase cap with Module 4.
 
+**Key behaviors:**
+
+- Fresh commercial min prices fetched each run via `get_commercial_min_prices()`
+- Price floor derived from `effective_tiers[0]` (not legacy `market_min`)
+- `effective_tiers` passed to both SKU discount and QD handlers
+- Cart tightening triggers when `qty_per_retailer_ratio > 1.3`
+
 **Post-processing:** price floor enforcement, fixed overrides, then push sequence: cart rules → prices → SKU discounts → QDs.
 
 ### 5. Module 4 — Hourly Updates
 
 **File:** `modules/module_4_hourly_updates.ipynb` | **Schedule:** 1–3 AM, 9–11 AM, 1–3 PM, 4–10 PM
 
-Runs on all non-Module-3 hours for fine-grained adjustments. Uses fixed ratio thresholds (0.9/1.1), aligned with Module 3.
+Runs on all non-Module-3 hours for fine-grained adjustments. Uses fixed ratio thresholds (0.9/1.1), aligned with Module 3. Consumes `effective_tiers` in its action pipeline and fetches fresh commercial min prices each run via `get_commercial_min_prices()`.
 
 | Trigger | Action |
 |---------|--------|
@@ -230,7 +275,7 @@ Margin is resolved via hierarchy: brand + category target → category target �
 
 **File:** `modules/qd_handler.ipynb` | **Called by:** Module 3
 
-Manages the full quantity discount lifecycle — deactivates all active QDs via API, then creates new ones.
+Manages the full quantity discount lifecycle — deactivates all active QDs via API, then creates new ones. Prefers `effective_tiers` for tier price derivation; falls back to individual market/margin columns when tiers are unavailable.
 
 | Tier | Source | Elasticity Ratio | Discount Cap |
 |------|--------|-------------------|--------------|
@@ -244,7 +289,7 @@ Top 400 tier entries per warehouse by inventory value. QDs are uploaded via Exce
 
 **File:** `modules/sku_discount_handler.ipynb` | **Called by:** Module 3
 
-Per-SKU "Special Discounts" lifecycle: deactivate existing → create new ones via S3 bulk upload. Discount range: **0.25–5%** of effective price.
+Per-SKU "Special Discounts" lifecycle: deactivate existing → create new ones via S3 bulk upload. Discount range: **0.25–5%** of effective price. Prefers `effective_tiers` for price-aware discounting; falls back to individual market/margin columns when tiers are unavailable.
 
 | Condition | Behavior |
 |-----------|----------|
@@ -261,7 +306,7 @@ Per-SKU "Special Discounts" lifecycle: deactivate existing → create new ones v
 
 Shared data access layer used by every module. Centralizes all external queries:
 
-- **Snowflake:** stocks, prices, WAC, cart rules, packing units, UTH performance, hourly distribution, stock snapshots, percentiles, quarterly contribution, target turnover, and **`get_commercial_min_prices()`** (live commercial minimum constraints from `finance.minimum_prices` for Module 3 and Module 4 each run)
+- **Snowflake:** stocks, prices, WAC, cart rules, packing units, UTH performance, hourly distribution, stock snapshots, percentiles, quarterly contribution, target turnover, **`get_commercial_min_prices()`** (live commercial minimum constraints from `finance.minimum_prices` for Module 3 and Module 4 each run), and **`get_commercial_price_ups()`** (price-up percentages from `retool.stocking_request` used for commercial price-up signals)
 - **PostgreSQL (DWH):** last-hour performance
 - **Google Sheets:** fixed prices and cart rules (manual overrides)
 - **Retailer selection:** churned buyers, category buyers, out-of-cycle, view-no-orders, exclusion lists
@@ -301,26 +346,23 @@ MaxAB organizes Egypt into regional cohorts, each mapped to one or more physical
 
 The cost basis for all margin calculations. WAC reflects the blended purchase cost across recent POs and is updated intraday when new purchases arrive. Module 4 specifically watches for WAC jumps > 0.5% to restore margin.
 
-### Market & Margin Tier Ladders
+### Effective Tiers (V2 Pricing Ladder)
 
-Prices are not set as continuous values — they follow **discrete tier ladders** in 0.25 EGP steps. When market data exists, tiers are built from competitor price percentiles (P25, P50, P75, max). When no market data is available, tiers are derived from margin boundaries (min → max margin, split by ABC class).
+All pricing modules operate on a unified **`effective_tiers`** list rather than raw market or margin columns. The resolution order:
+
+1. **`price_tiers`** — sorted price list from Market Data V2 (`get_market_data_v2()`), built from competitor sources + commercial price-up anchors
+2. **`margin_tier_prices`** — fallback ladder derived from historical margin boundaries (min → max margin, split by ABC class)
+3. **Empty list** — when neither source provides data
 
 ```mermaid
 graph LR
-    subgraph Market Tier Ladder
-        MP25[P25 — Floor] --> MP50[P50 — Median] --> MP75[P75 — Upper] --> MMAX[Max — Ceiling]
-    end
-
-    subgraph Margin Tier Ladder
-        MMIN[Min Margin<br/>WAC / 1-min%] --> MMID[Mid Margin<br/>ABC-weighted] --> MMAX2[Max Margin<br/>WAC / 1-max%]
-    end
-
-    subgraph Stepping
-        direction TB
-        S1["Each tier = 0.25 EGP step"]
-        S2["Move up/down by 1–2 steps<br/>based on performance"]
-    end
+    PT["price_tiers<br/>(V2 market data)"] -->|available?| YES1[Use as effective_tiers]
+    PT -->|empty| MT["margin_tier_prices<br/>(historical margins)"]
+    MT -->|available?| YES2[Use as effective_tiers]
+    MT -->|empty| EMPTY["empty list<br/>(no tiers)"]
 ```
+
+Prices follow **discrete 0.25 EGP steps** within the effective tier list. Modules move up or down by 1–2 steps based on performance signals. There is **no ceiling cap** — when the top tier is exhausted, the above-market fallback (`get_above_market_price()`) computes the next price from avg margin step / 20% target margin / +1% bump.
 
 ### UTH (Up-Till-Hour) Performance
 
@@ -406,11 +448,13 @@ flowchart TD
         SF[(Snowflake)]
         PG[(PostgreSQL)]
         GS[Google Sheets]
+        CT[Commercial Tool]
     end
 
     subgraph Shared["Shared Layer"]
         QM[queries_module.ipynb]
-        MD[market_data_module.ipynb]
+        MD[market_data_module.ipynb<br/>V1 legacy]
+        MD2[market_data_module_2.ipynb<br/>V2 price tiers]
     end
 
     subgraph Daily["Daily Batch — 08:00"]
@@ -437,12 +481,14 @@ flowchart TD
 
     SF & PG & GS --> QM
     SF --> MD
-    QM & MD --> DE
+    SF & CT --> MD2
+    MD --> MD2
+    QM & MD2 --> DE
     DE --> PDE
     PDE --> M2
     M2 -->|cart + prices| API
 
-    QM & MD --> M3
+    QM & MD2 --> M3
     M3 -->|cart + prices| API
     M3 --> SKUD
     M3 --> QDH
@@ -489,7 +535,8 @@ ABC-class-specific settings:
 ```
 Mustafa/
 ├── modules/
-│   ├── market_data_module.ipynb        # Competitor/market data
+│   ├── market_data_module.ipynb        # V1 legacy market data
+│   ├── market_data_module_2.ipynb      # V2 price tiers (production entry point)
 │   ├── module_2_initial_price_push.ipynb
 │   ├── module_3_periodic_actions.ipynb
 │   ├── module_4_hourly_updates.ipynb
