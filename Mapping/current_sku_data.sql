@@ -69,7 +69,7 @@ FROM nmv_last_4m
 group by all
 )
 select distinct p.id as product_id ,
-CONCAT(p.name_ar,' ',p.size,' ',product_units.name_ar) as sku,b.name_ar as brand,c.name_ar as cat,current_price,PACKING_UNIT_ID,BASIC_UNIT_COUNT,
+CONCAT(p.name_ar,' ',p.size,' ',product_units.name_ar) as sku,b.name_ar as brand,c.name_ar as cat,current_price,cp.PACKING_UNIT_ID,cp.BASIC_UNIT_COUNT,child_quantity,
 pu.name_ar as packing_unit_name_ar ,pu.name_en as packing_unit_name_en,stocks,nmv
 
 from products p 
@@ -79,6 +79,7 @@ JOIN product_units ON product_units.id = p.unit_id
 join current_prices cp on cp.product_id = p.id 
 join PACKING_UNITS pu on pu.id = cp.PACKING_UNIT_ID
 join current_stocks cs on p.id = cs.product_id
+join PACKING_UNIT_PRODUCTs pup on pup.product_id= p.id and pup.PACKING_UNIT_ID = pu.id  
 left join current_sales csa on csa.product_id = p.id
 
 where stocks >0 or nmv > 0
