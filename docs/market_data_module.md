@@ -31,9 +31,10 @@ flowchart TD
         V2A[get_market_data_v2] --> V2B[Collect same 3 sources\ninto sorted price_tiers]
         V2B --> V2C[Brand fallback\nPython-side aggregates]
         V2C --> V2D["Single-price expansion\n1. Regional fallback\n2. Margin-step ±2 steps"]
-        V2D --> V2E["Commercial price-up\ninduced prices\nfrom retool.stocking_request"]
-        V2E --> V2F["Step subdivision\ngap > 30% target_margin"]
-        V2F --> V2G[Return price_tiers\nper product × region]
+        V2D --> V2D2["Margin anchor injection\n1. Target margin price\n2. ATH margin price"]
+        V2D2 --> V2E["Step subdivision\ngap > 30% target_margin"]
+        V2E --> V2E2["Commercial price-up\ninduced prices\nfrom retool.stocking_request"]
+        V2E2 --> V2F[Return price_tiers\nper product × region]
     end
 
     subgraph Parallel Enrichments
@@ -66,7 +67,7 @@ flowchart TD
 | Function | Description |
 |----------|-------------|
 | `get_market_data_legacy()` | Legacy pipeline (same DB output as V1): query 3 sources → join → commercial groups (weighted median) → WAC/margins/targets → coverage filter → price analysis → step bounds → margin columns. Called internally by V2 to preserve backward-compatible DB storage |
-| `get_market_data_v2()` | V2 pipeline producing sorted `price_tiers` list per `(product_id, region)`. Two-stage single-price expansion: (1) regional fallback — borrow prices from neighboring regions, (2) margin-step expansion — ±2 steps centered on the single price. Includes brand fallback (Python-side aggregates), commercial price-up induced prices (from `retool.stocking_request`), and step subdivision (gap > 30% target_margin) |
+| `get_market_data_v2()` | V2 pipeline producing sorted `price_tiers` list per `(product_id, region)`. Two-stage single-price expansion: (1) regional fallback — borrow prices from neighboring regions, (2) margin-step expansion — ±2 steps centered on the single price. Includes brand fallback (Python-side aggregates), margin anchor injection (target margin + ATH margin prices), step subdivision (gap > 30% target_margin), and commercial price-up induced prices (from `retool.stocking_request`) |
 | `get_margin_tiers()` | Historical realized margins by warehouse × product. IQR-cleaned, time-weighted with exponential decay. Produces 8 tiers from `min_boundary` to `max_boundary` |
 | `get_brand_market_percentiles()` | Region × brand × category margin percentiles used as fallback when SKU-level data is missing |
 | `fill_brand_market_fallback()` | Maps brand percentiles to margin/price columns; sets `market_data_source` to `'sku'`, `'brand'`, or `null` |
@@ -99,6 +100,7 @@ flowchart LR
 | Snowflake — Marketplace | Regional shelf prices |
 | Snowflake — Scraped | Competitor matched prices (Speed = Alexandria only) |
 | Snowflake — `retool.stocking_request` | Commercial price-up forecasts (V2 induced prices) |
+| Snowflake — Daily margins (240d) | IQR-filtered all-time-high margin per product (V2 anchor injection) |
 | Snowflake — Pricing_data_extraction | 60-day price history for signals |
 | Snowflake — Daily margins | Realized margin history |
 
@@ -134,8 +136,9 @@ flowchart LR
 |-------|-------------|
 | **Brand fallback** | Python-side fallback for SKUs with no market data — uses brand-level price aggregates to populate tiers |
 | **Single-price expansion** | Two-stage: (1) regional fallback borrows prices from neighboring regions; (2) margin-step expansion generates ±2 steps centered on the single price |
-| **Commercial price-up** | Induced prices sourced from `retool.stocking_request` via `get_commercial_price_ups()` — injected as additional tier anchors |
+| **Margin anchor injection** | Injects two anchor prices into each SKU's tier list: (1) **target margin price** = `wac / (1 - target_margin)` — the commercially planned operating point; (2) **ATH margin price** = `wac / (1 - ath_margin)` — the highest proven margin (240d IQR-filtered, max across warehouses, negatives clipped to 7%). Both are rounded to 0.25 EGP and must pass the WAC floor (≥ 0.9 × WAC). Together they anchor the "comfort zone" so the subsequent subdivision creates fine-grained steps between the target, ATH, and high market prices |
 | **Step subdivision** | Tiers are subdivided when the gap between consecutive prices implies > 30% of `target_margin` |
+| **Commercial price-up** | Induced prices sourced from `retool.stocking_request` via `get_commercial_price_ups()` — injected as additional tier anchors after subdivision |
 
 ---
 
