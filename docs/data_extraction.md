@@ -12,8 +12,8 @@ Builds a wide warehouse-SKU level dataset from 20+ Snowflake queries, enriched w
 flowchart TD
     A[Start] --> B[Load product base from Snowflake\nCohort prices, WAC, live slot prices]
 
-    B --> C[Run market_data_module]
-    C --> C1[get_market_data]
+    B --> C[Run market_data_module_2]
+    C --> C1[get_market_data_legacy\nfrom V2 module — same DB output]
     C --> C2[get_brand_market_percentiles]
     C --> C3[fill_brand_market_fallback]
     C --> C4[get_margin_tiers]
@@ -78,7 +78,7 @@ flowchart TD
 | Function | Description |
 |----------|-------------|
 | Product base loader | Queries Snowflake for cohort prices, WAC, live slot prices |
-| Market data pipeline | Calls `get_market_data()`, `get_brand_market_percentiles()`, `fill_brand_market_fallback()`, `get_margin_tiers()` |
+| Market data pipeline | Calls `get_market_data_legacy()` (from V2 module — same DB output as V1), `get_brand_market_percentiles()`, `fill_brand_market_fallback()`, `get_margin_tiers()` |
 | Inventory merger | Stocks, zero demand, OOS, running rate, DOH, ABC classification |
 | PO + lead time merger | PostgreSQL join for PO data and expected receiving dates |
 | Performance benchmark merger | 240-day P80/P70 benchmarks, over-achiever path, tags, weighted ratio |
@@ -93,7 +93,7 @@ flowchart TD
 |--------|------|
 | Snowflake | Product base, sales (120d NMV), margins, commercial targets, groups, discounts, inventory, benchmarks, cart rules |
 | PostgreSQL | PO data, lead time |
-| Market Data Module | Market prices, margin tiers, brand percentiles |
+| Market Data Module V2 | Market prices via `get_market_data_legacy()`, margin tiers, brand percentiles |
 
 ### Outputs
 | Output | Destination |
@@ -127,6 +127,6 @@ flowchart TD
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `setup_environment_2` (env), `common_functions` (upload, Slack), `market_data_module` |
+| **Requires** | `setup_environment_2` (env), `common_functions` (upload, Slack), `market_data_module_2` (via `get_market_data_legacy()`) |
 | **Databases** | Snowflake (primary), PostgreSQL (PO / lead time) |
 | **Consumed by** | `module_2_initial_price_push`, `module_3_periodic_actions`, `module_4_hourly_updates` |

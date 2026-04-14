@@ -83,12 +83,12 @@ flowchart TD
 
     %% ── POST PROCESSING ──
     POST[Post-Processing]
-    POST --> PP1["Floor enforcement"]
+    POST --> PP1["Floor enforcement\neffective_tiers#91;0#93; as price floor"]
     PP1 --> PP2["Google Sheet fixed price/cart"]
     PP2 --> PP3["Push cart rules"]
     PP3 --> PP4["Push prices per cohort"]
-    PP4 --> PP5["process_sku_discounts"]
-    PP5 --> PP6["process_qd"]
+    PP4 --> PP5["process_sku_discounts\neffective_tiers passed"]
+    PP5 --> PP6["process_qd\neffective_tiers passed"]
     PP6 --> PP7["Archive → Snowflake + Slack"]
 ```
 
@@ -99,7 +99,7 @@ flowchart TD
 ```mermaid
 flowchart LR
     A["p80_daily_240d × qtr_cntrb × uth_cntrb"] --> B["qty_target = max(result, turnover_target, 4)"]
-    C["p70_daily_retailers_240d × min(in_stock_cntrb_ret, avg_uth_pct)"] --> D["retailer_target = max(result, 2)"]
+    C["p80_daily_retailers_240d × min(in_stock_cntrb_ret, avg_uth_pct)\n(column still named p70)"] --> D["retailer_target = max(result, 2)"]
 
     B --> E["qty_ratio = uth_qty / qty_target"]
     D --> F["retailer_ratio = uth_retailers / retailer_target"]
@@ -112,7 +112,7 @@ flowchart LR
 |-----------|---------|
 | `uth_cntrb` | `min(in_stock_contribution_qty, avg_uth_pct)` |
 | `qty_target` | `max(p80_daily_240d × qtr_cntrb × uth_cntrb, turnover_target, 4)` |
-| `retailer_target` | `max(p70_daily_retailers_240d × min(in_stock_cntrb_ret, avg_uth_pct), 2)` |
+| `retailer_target` | `max(p80_daily_retailers_240d × min(in_stock_cntrb_ret, avg_uth_pct), 2)` — column still named `p70` in the data but uses P80 calculation |
 | `qty_ratio` | `uth_qty / qty_target` |
 | `retailer_ratio` | `uth_retailers / retailer_target` |
 | Growing | ratio > 1.1 |
@@ -160,9 +160,15 @@ flowchart LR
 
 ---
 
+## Effective Tiers
+
+All pricing decisions use `effective_tiers` = `price_tiers` (V2) > `margin_tier_prices` > empty list. The effective tiers list is also passed to both the SKU discount handler and QD handler for tier-aware discounting.
+
+---
+
 ## Commercial minimum prices
 
-Each run refreshes commercial minimum constraints from `finance.minimum_prices` via `queries_module.get_commercial_min_prices()`, instead of relying on the morning `Pricing_data_extraction` snapshot for those values. Post-processing price floor enforcement still uses `effective_tiers[0]` on the tier ladder as documented above.
+Each run refreshes commercial minimum constraints from `finance.minimum_prices` via `queries_module.get_commercial_min_prices()`, instead of relying on the morning `Pricing_data_extraction` snapshot for those values. Post-processing price floor enforcement uses `effective_tiers[0]` (the lowest tier price) as the price floor — not the legacy `market_min` column.
 
 ---
 

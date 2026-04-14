@@ -19,7 +19,7 @@ flowchart TD
     TQTY --> TQTY_DETAIL["T1/T2 from ~4 months\norder history:\n• Percentiles\n• Outlier removal\n• Recency weighting"]
 
     TQTY_DETAIL --> T12_PRICE[Calculate T1/T2 prices]
-    T12_PRICE --> T12_DETAIL["From market/margin tier candidates\nprice = wac / (1 − margin)\nBetween max discount 5%\nand min discount 0.35%\nPick 2 distinct prices\nwith ≥ 0.25% gap"]
+    T12_PRICE --> T12_DETAIL["calculate_tier_prices:\nPrefers effective_tiers,\nfalls back to individual columns\nprice = wac / (1 − margin)\nBetween max discount 5%\nand min discount 0.35%\nPick 2 distinct prices\nwith ≥ 0.25% gap"]
 
     T12_DETAIL --> T3[Calculate T3 wholesale]
     T3 --> T3_DETAIL["Savings from consolidating\norders vs car cost\nMultipliers: 3 … orders_per_car\nWS_MAX_TICKET_SIZE = 60,000\nWS_MIN_MARGIN = −5%"]
@@ -50,7 +50,7 @@ flowchart LR
     end
 
     subgraph "T1/T2 Prices"
-        D["Market/margin tier candidates"] --> E["price = wac / (1 − margin)"]
+        D["effective_tiers preferred\nfallback: individual columns"] --> E["price = wac / (1 − margin)"]
         E --> F{"Between\nmax discount 5%\nmin discount 0.35%?"}
         F -- Yes --> G["Pick 2 distinct prices\n≥ 0.25% gap"]
         F -- No --> H[Reject candidate]
@@ -85,7 +85,7 @@ flowchart LR
 | Top-selling PU merger | Identifies highest-selling packing units for QD creation |
 | Effective price calculator | Computes effective price per warehouse × product |
 | Tier quantity calculator | Derives T1/T2 quantities from ~4 months order history (percentiles, outliers, recency) |
-| T1/T2 price calculator | Selects 2 distinct discount prices from market/margin candidates within 0.35%–5% band |
+| `calculate_tier_prices` | Selects 2 distinct discount prices — prefers `effective_tiers` (passed from Module 3), falls back to individual market/margin columns. Prices within 0.35%–5% discount band |
 | T3 wholesale calculator | Computes wholesale tier from delivery consolidation savings vs car cost |
 | Tier validator | Enforces strict T1 < T2 < T3 ordering; clears invalid tiers; requires ≥ 2 active tiers |
 | Ranking + cap | Ranks by `stocks × wac_p`; caps at 400 entries per warehouse |
@@ -98,8 +98,8 @@ flowchart LR
 ### Inputs
 | Source | Data |
 |--------|------|
-| Module 3 | Trigger signal with SKU list flagged for QD |
-| Snowflake | Order history (~4 months), active QDs, market/margin tiers |
+| Module 3 | Trigger signal with SKU list flagged for QD + `effective_tiers` |
+| Snowflake | Order history (~4 months), active QDs |
 | Snowflake | Warehouse ticket stats, stock levels, WAC |
 
 ### Outputs

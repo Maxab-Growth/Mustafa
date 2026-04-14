@@ -13,7 +13,7 @@ flowchart TD
     START[Start: Called from Module 3] --> DEACT["Deactivate all active\nSpecial Discounts"]
     DEACT --> FILTER{"activate_sku_discount\n== True?"}
     FILTER -- No --> SKIP[Skip SKU]
-    FILTER -- Yes --> CALC["calculate_discounts_batch\nCompute discount price per SKU"]
+    FILTER -- Yes --> CALC["calculate_discounts_batch\nbuild_candidate_prices from\neffective_tiers (preferred)\nor MARKET_MARGIN_COLS + MARGIN_TIER_COLS"]
 
     CALC --> CHK{"discount > 0?"}
     CHK -- No --> SKIP2[Skip — no valid discount]
@@ -91,7 +91,8 @@ flowchart TD
 | Function | Description |
 |----------|-------------|
 | Deactivation | Deactivates all currently active Special Discounts |
-| `calculate_discounts_batch` | Batch discount price calculation across all eligible SKUs |
+| `build_candidate_prices` | Builds the candidate price list for a SKU — prefers `effective_tiers` (passed from Module 3), falls back to `MARKET_MARGIN_COLS` + `MARGIN_TIER_COLS` individual columns |
+| `calculate_discounts_batch` | Batch discount price calculation across all eligible SKUs using candidate prices |
 | Discount logic router | Routes to low-stock / zero-demand / overstock / UTH-based logic |
 | `select_target_retailers` | Merges 4 retailer sources, applies exclusions, removes QD conflicts |
 | Upload structurer | Formats payload for S3 upload with chunking constraints |
@@ -104,8 +105,8 @@ flowchart TD
 ### Inputs
 | Source | Data |
 |--------|------|
-| Module 3 | SKU list with `activate_sku_discount = True` + UTH status |
-| Snowflake | Current prices, WAC, DOH, market/margin tiers, old discount prices |
+| Module 3 | SKU list with `activate_sku_discount = True` + UTH status + `effective_tiers` |
+| Snowflake | Current prices, WAC, DOH, old discount prices |
 | Snowflake | Retailer pools (churned, category buyers, viewers, out-of-cycle) |
 | Snowflake | Exclusion lists (failed orders, inactive, wholesale, active QDs) |
 

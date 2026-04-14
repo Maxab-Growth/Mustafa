@@ -18,7 +18,7 @@ flowchart TD
         DE[Data Extraction]
         QD[QD Handler]
         SKU[SKU Discount Handler]
-        MKT[Market Data Module]
+        MKT[Market Data Module V2]
     end
 
     subgraph "Queries Module"
@@ -48,6 +48,7 @@ flowchart TD
     DE --> TGT
     QD --> TGT
     SKU --> RET
+    MKT --> STOCK
 
     CORE --> SF
     STOCK --> SF

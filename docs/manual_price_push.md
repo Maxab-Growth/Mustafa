@@ -57,7 +57,7 @@ Each product is automatically expanded to all 9 cohorts (700-1126). Market-based
 
 | Data | Source | Key |
 |------|--------|-----|
-| Market prices | `get_market_data_v2()` via market_data_module | product_id, cohort_id |
+| Market prices | `get_market_data_v2()` via market_data_module — percentiles derived from `price_tiers` via `tiers_to_percentiles()` | product_id, cohort_id |
 | WAC | `finance.all_cogs` (current date window) | product_id |
 | Current prices | `cohort_product_packing_units` + DBDP live slot | product_id, cohort_id |
 | Packing units | `packing_unit_products` (60d sales-weighted) | product_id |

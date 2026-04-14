@@ -47,9 +47,9 @@ flowchart TD
     CHK_NODATA -- No --> PRICE_ACTION["get_price_action\ncombined_status × yesterday_status"]
 
     TREAT_CRIT --> APPLY
-    PRICE_ACTION --> APPLY[apply_price_action\nTier ladders + margin% fallback]
+    PRICE_ACTION --> APPLY[apply_price_action\neffective_tiers + margin% fallback]
     APPLY --> MKT_SIG{Market signal override?\ndata_points ≥ 10\nvolatility ≤ 5%\nuptrend}
-    MKT_SIG -- Yes --> MKT_BOOST["yesterday above → increase\nincrease → 2 steps + above-market fallback\nmarket boost tag"]
+    MKT_SIG -- Yes --> MKT_BOOST["yesterday above_on_track → increase\n(regardless of combined)\nincrease → 2 steps + above-market fallback\nmarket boost tag"]
     MKT_SIG -- No --> CART_NORMAL["get_initial_cart_rule\npercentile-based"]
     MKT_BOOST --> CART_NORMAL
     CART_NORMAL --> FINAL
@@ -91,23 +91,24 @@ flowchart TD
 
 ---
 
-## Tier System
+## Tier System — Effective Tiers
 
 ```mermaid
 flowchart LR
-    A[Market margin tiers] --> B[get_enriched_market_tiers]
-    C[Internal margin tiers] --> D[get_enriched_margin_tiers]
-    B --> E[subdivide_tiers\nMax gap: 30% of target_margin]
-    D --> E
-    E --> F[Discrete price ladder\nMin step: 0.25 EGP]
+    PT["price_tiers\n(V2 market data)"] -->|available?| YES1[Use as effective_tiers]
+    PT -->|empty| MT["margin_tier_prices\n(historical margins)"]
+    MT -->|available?| YES2[Use as effective_tiers]
+    MT -->|empty| EMPTY["empty list\n(no tiers)"]
+    YES1 --> F[Discrete price ladder\nMin step: 0.25 EGP]
+    YES2 --> F
     F --> G[find_next_price_above\nfind_next_price_below]
-    G --> H[No ceiling - above-market fallback]
+    G --> H[No ceiling — above-market fallback]
 ```
 
-- Prices move on discrete ladders: market tiers first, then internal margin tiers
-- Tiers subdivided when gap exceeds 30% of `target_margin`
+- All price movements use the unified **`effective_tiers`** list: `price_tiers` (V2) > `margin_tier_prices` > empty
 - Minimum step size: **0.25 EGP**
-- No ceiling cap on increases — when all tiers exhausted, above-market fallback kicks in (avg margin step → 20% target margin → +1% bump)
+- **No ATH ceiling cap** — prices can step beyond the top of the tier ladder
+- When all tiers exhausted, `get_above_market_price()` computes the next price (avg margin step / 20% target margin / +1% bump)
 
 ---
 
@@ -115,20 +116,15 @@ flowchart LR
 
 | Function | Description |
 |----------|-------------|
-| `generate_initial_price_push` | Main engine — reads extraction data, applies decision tree, outputs price + cart actions |
+| `generate_initial_price_push` | Main engine — reads extraction data, builds `effective_tiers` per SKU, applies decision tree, outputs price + cart actions |
 | `get_price_action` | Maps `(combined_status, yesterday_status)` → hold / increase / decrease |
-| `apply_price_action` | Executes the action using tier ladders with margin% fallback on increases |
-| `find_next_price_above` | Finds the next higher price on the tier ladder |
-| `find_next_price_below` | Finds the next lower price on the tier ladder |
+| `apply_price_action` | Executes the action using `effective_tiers` with margin% fallback on increases |
+| `find_next_price_above` | Finds the next higher price on the effective tier ladder |
+| `find_next_price_below` | Finds the next lower price on the effective tier ladder |
 | `get_initial_cart_rule` | Computes cart rule from order-line percentiles |
-| `get_max_price` | Returns max of market ladder or margin ladder price (for OOS) |
-| `get_market_tiers` | Extracts market-based tier ladder for a SKU |
-| `get_margin_tiers` | Extracts internal margin-based tier ladder |
-| `get_enriched_market_tiers` | Market tiers with interpolated steps |
-| `get_enriched_margin_tiers` | Margin tiers with interpolated steps |
-| `subdivide_tiers` | Splits tier gaps exceeding 30% of target margin |
+| `get_max_price` | Returns max of effective tier ladder price (for OOS) |
 | `get_margin_increase_pct` | Determines margin % step for increase actions |
-| `get_above_market_price` | Fallback price when tier ladders exhausted (avg margin step / 20% target / +1%) |
+| `get_above_market_price` | Fallback price when effective tiers exhausted (avg margin step / 20% target / +1%) |
 
 ---
 
@@ -139,7 +135,7 @@ flowchart LR
 |--------|------|
 | Snowflake — `Pricing_data_extraction` | Full SKU dataset (market data, inventory, performance, margins) |
 | Google Sheets — "Fixed Price" | Product-level fixed price and fixed cart overrides |
-| Market/Margin tier ladders | From `market_data_module` output embedded in extraction |
+| `effective_tiers` | Built from `price_tiers` (V2) > `margin_tier_prices` > empty — sourced from `market_data_module_2` output embedded in extraction |
 
 ### Outputs
 | Output | Destination |
@@ -159,8 +155,7 @@ flowchart LR
 | `MIN_CART_RULE` | 10 | Minimum allowed cart rule |
 | `MAX_CART_RULE` | 500 | Maximum allowed cart rule |
 | `MIN_PRICE_CHANGE_EGP` | 0.25 | Smallest allowed price change |
-| Tier subdivision threshold | 30% of `target_margin` | Max gap before tiers are subdivided |
-| Market signal: min data points | 10 | Required for market signal override (yesterday above on track triggers hold→increase) |
+| Market signal: min data points | 10 | Required for market signal override (yesterday above_on_track → increase, regardless of combined) |
 | Market signal: max volatility | 5% | Volatility ceiling for signal eligibility |
 
 ---
@@ -179,6 +174,6 @@ When no market signal exists from technical indicators, Module 2 falls back to c
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `data_extraction` (Pricing_data_extraction table), `market_data_module` (tier ladders), `common_functions` (API upload, Slack), `setup_environment_2` |
+| **Requires** | `data_extraction` (Pricing_data_extraction table), `market_data_module_2` (`effective_tiers` via `price_tiers` / `margin_tier_prices`), `queries_module` (`get_commercial_price_ups()`), `common_functions` (API upload, Slack), `setup_environment_2` |
 | **External** | MaxAB API (price + cart push), Google Sheets (fixed overrides) |
 | **Archives to** | Snowflake — `pricing_initial_push` |

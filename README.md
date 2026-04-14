@@ -150,7 +150,7 @@ All downstream modules consume `effective_tiers` = `price_tiers` (from V2) > `ma
 
 **File:** `data_extraction.ipynb`
 
-Builds a comprehensive warehouse × SKU dataset by joining 20+ Snowflake queries: product base, WAC costs, market data, 120-day NMV sales, margin stats/targets, inventory, demand signals, PO/leadtime, active discounts, cart rules, and ABC classification. Computes derived fields like `price_position`, `performance_tag`, `DOH`, `running_rate`, and `ABC_class`. Exports to Excel, writes to Snowflake table `Pricing_data_extraction`, and sends a Slack notification on completion.
+Builds a comprehensive warehouse × SKU dataset by joining 20+ Snowflake queries: product base, WAC costs, market data (via `get_market_data_legacy()` from the V2 module — same DB output as V1), 120-day NMV sales, margin stats/targets, inventory, demand signals, PO/leadtime, active discounts, cart rules, and ABC classification. Computes derived fields like `price_position`, `performance_tag`, `DOH`, `running_rate`, and `ABC_class`. Exports to Excel, writes to Snowflake table `Pricing_data_extraction`, and sends a Slack notification on completion.
 
 ### 3. Module 2 — Initial Price Push
 
@@ -177,7 +177,7 @@ flowchart TD
     OVERRIDE --> PUSH[Push cart rules → then prices<br/>per cohort via API]
 ```
 
-Target prices are computed from `effective_tiers` in discrete steps (minimum 0.25 EGP). No ATH ceiling cap — prices can step beyond the top of the tier ladder via `get_above_market_price()` (avg margin step / 20% target margin / +1% bump). Market signal: a hold is upgraded to an increase when yesterday's status is **above on track** and the market is trending up.
+Target prices are computed from `effective_tiers` in discrete steps (minimum 0.25 EGP). No ATH ceiling cap — prices can step beyond the top of the tier ladder via `get_above_market_price()` (avg margin step / 20% target margin / +1% bump). Market signal: when yesterday is **above on track** and market is trending up, the action is upgraded to an increase **regardless of the combined status**.
 
 **Commercial price-up fallback:** when no market signal is available, the commercial price-up percentage from `retool.stocking_request` drives a tiered signal:
 
@@ -195,7 +195,7 @@ Fixed price and cart overrides from Google Sheets are applied last. Push order i
 
 **File:** `modules/module_3_periodic_actions.ipynb` | **Schedule:** 12 PM, 5 PM, 11 PM
 
-The main intraday engine. Compares up-till-hour (UTH) quantity and retailer counts against dynamic benchmarks (P80 for both quantity and retailers: daily benchmark × quarterly contribution × hour contribution, with the same P80 lookback window). Classifies each SKU as **Growing**, **On Track**, or **Dropping**.
+The main intraday engine. Compares up-till-hour (UTH) quantity and retailer counts against dynamic benchmarks (P80 for both quantity and retailers: daily benchmark × quarterly contribution × hour contribution, with the same P80 lookback window — retailer column is still named `p70` but uses P80 calculation). Uses fixed ratio thresholds (0.9 / 1.1) to classify each SKU as **Growing**, **On Track**, or **Dropping**.
 
 ```mermaid
 flowchart TD
@@ -549,6 +549,7 @@ Mustafa/
 ├── docs/                               # Per-module documentation
 ├── queries/                            # Standalone SQL reference queries
 ├── Mapping/                            # SKU mapping pipeline
+│   └── bs_mapping_pipeline.ipynb       # Ben Soliman SKU mapping
 ├── archive/                            # Inactive/legacy notebooks
 ├── constants.py                        # Shared constants (warehouses, cohorts, channels)
 ├── db.py                               # Shared query_snowflake() implementation

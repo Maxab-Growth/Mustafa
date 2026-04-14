@@ -96,14 +96,20 @@ flowchart LR
 
 ---
 
+## Effective Tiers
+
+All price actions use `effective_tiers` = `price_tiers` (V2) > `margin_tier_prices` > empty list, consistent with Module 3. Dead code removed: `get_status_std`, `subdivide_tiers` are no longer used — status classification uses fixed ratio thresholds (0.9 / 1.1), not ±1 standard deviation bands.
+
+---
+
 ## Key Functions
 
 | Function | Description |
 |----------|-------------|
-| Main hourly engine | Loads data, classifies eligibility (A/B/C), applies price action per condition |
-| `smooth_price_increase` | Halfway-to-next-tier with margin clamping and 0.25 EGP rounding |
+| Main hourly engine | Loads data, builds `effective_tiers`, classifies eligibility (A/B/C), applies price action per condition |
+| `smooth_price_increase` | Halfway-to-next-tier on `effective_tiers` with margin clamping and 0.25 EGP rounding |
 | Status classifier | Fixed ratio thresholds (0.9 / 1.1) vs UTH target, aligned with Module 3 |
-| WAC path handler | Restores margin vs new WAC to at least `margin_tier_1`; prefers market prices |
+| WAC path handler | Restores margin vs new WAC to at least `margin_tier_1`; prefers market prices from `effective_tiers` |
 | Growth path handler | Retailers growing → smooth increase; qty growing → cart + price; low stock → cap cart |
 | Commercial min handler | Bumps price to `commercial_min_price` (constraints loaded fresh each run via `get_commercial_min_prices()`, not from the morning extraction snapshot) |
 
@@ -160,15 +166,12 @@ Runs on hours **between** Module 3 slots:
 | Hour (Cairo) | Module |
 |-------------|--------|
 | 12 PM | M3 |
-| 1–2 PM | **M4** |
-| 3 PM | M3 |
-| 4–5 PM | **M4** |
-| 6 PM | M3 |
-| 7–8 PM | **M4** |
-| 9 PM | M3 |
-| 10–11 PM | **M4** |
-| 12 AM | M3 |
-| 3 AM | **M4** |
+| 1–4 PM | **M4** |
+| 5 PM | M3 |
+| 6–10 PM | **M4** |
+| 11 PM | M3 |
+| 12–3 AM | **M4** |
+| 9–11 AM | **M4** |
 
 ---
 
