@@ -52,6 +52,21 @@ flowchart TD
 
 ---
 
+## Price Action Summary
+
+| Condition | Trigger | Price Action | Method / Magnitude | Cart Action | Guards |
+|-----------|---------|-------------|-------------------|-------------|--------|
+| **A: WAC increase** | `new_wac > wac_p × 1.005` | **Increase** | Smooth step toward market/tier price; restore margin to at least `margin_tier_1` vs new WAC | None | Only fires if current margin vs new WAC is below `margin_tier_1` |
+| **B: Retailers growing** | UTH qty growing + last hour qty growing + last hour retailers growing + sellable + not high DOH + no cooldown | **Increase** | `smooth_price_increase`: halfway to next tier, clamped margin step, rounded 0.25 EGP. If no tier above: avg margin step / +20% target margin / +1% fallback | None | M3 cooldown (2h), M4 self-cooldown (1h) |
+| **B: Qty-only growing** | UTH qty growing + last hour qty growing + last hour retailers NOT growing + same eligibility | **Increase** | Same smooth step + same fallback chain | Cart down one percentile if UTH qty > 2× target; low stock: cap cart to `normal_refill` | Daily cap: max 3 qty-driven price steps |
+| **C: Commercial min** | `current_price < commercial_min_price` (no other action triggered) | **Increase** | Bump to `commercial_min_price` | None | — |
+| **Commercial enforcement** | Any computed `new_price < commercial_min_price` | **Override** | Set `new_price = commercial_min_price` | None | Applied on top of A or B actions |
+| **Fixed price** | Product in Google Sheet fixed price list (and not WAC path) | **Override** | Set to fixed price from sheet | None | WAC increases are NOT overridden by fixed price |
+
+**Note:** Module 4 only performs price **increases** and commercial minimum enforcement. It does not perform price decreases.
+
+---
+
 ## Action Eligibility
 
 ```mermaid

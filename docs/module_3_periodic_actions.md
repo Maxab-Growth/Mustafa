@@ -94,6 +94,93 @@ flowchart TD
 
 ---
 
+## Price Action Summary
+
+### Early Exits
+
+| Condition | Action |
+|-----------|--------|
+| OOS (stock ≤ 0) | Skip — no action |
+| Below minimum stock flag | Skip — no action |
+
+### Zero Demand (zero_demand = 1, closing stock yesterday > 0)
+
+| Condition | Price Action | Magnitude | Other Actions |
+|-----------|-------------|-----------|---------------|
+| Discounts already exist + can reduce | **Induced decrease** | 1 margin step down via `calculate_induced_price` | Activate SKU discount + QD; cart → max(layer_3, current, 100) or 150 |
+| Discounts already exist + cannot reduce (hit daily cap) | **Hold** | — | Keep discounts + QD; wide cart |
+| No discounts yet | **Hold** (discounts first) | — | Activate SKU discount + QD; wide cart; price cut deferred to next run |
+
+### High DOH (responsive_doh > 30, inventory_value > 200, not OOS yesterday)
+
+| Condition | Price Action | Magnitude | Other Actions |
+|-----------|-------------|-----------|---------------|
+| No SKU discount yet | **Hold** | — | Activate SKU discount + QD; wide cart |
+| Has discount + qty_ratio ≥ 0.9 | **Hold** | — | Keep discounts; wide cart |
+| Has discount + qty_ratio < 0.9 + can reduce | **Induced decrease** | 1 margin step down | Keep discounts; wide cart |
+| Has discount + cannot reduce | **Hold** | — | Keep discounts; wide cart |
+
+### Low Stock (DOH ≤ 1, uth_qty > 0)
+
+| Condition | Price Action | Magnitude | Other Actions |
+|-----------|-------------|-----------|---------------|
+| qty_ratio > 1.1 + can increase + tier above exists | **Increase** | 1 step up | Cap cart to normal_refill + stddev |
+| Otherwise | **Hold** | — | Cap cart to normal_refill + stddev |
+
+### On Track (both qty_ratio and retailer_ratio in 0.9–1.1)
+
+| Condition | Price Action | Other Actions |
+|-----------|-------------|---------------|
+| Both ratios in band | **Hold** | Re-activate existing SKU discount / QD if present |
+
+### Retailers Growing, Qty On Track (qty 0.9–1.1, retailer_ratio > 1.1)
+
+| Condition | Price Action | Magnitude |
+|-----------|-------------|-----------|
+| retailer_ratio > 1.2 + can increase + tier above exists | **Increase** | 1 step up |
+| retailer_ratio ≤ 1.2 or cannot increase | **Hold** | — |
+
+### Growing (qty_ratio > 1.1)
+
+| Condition | Price Action | Magnitude | Other Actions |
+|-----------|-------------|-----------|---------------|
+| Has discounts + qty_ratio > 1.2 + can increase | Remove top discount + **Increase** | 1 step up | Cart tightening if qty_per_retailer_ratio > 1.3 |
+| Has discounts + qty_ratio ≤ 1.2 | Remove top discount + **Hold** | — | Cart tightening if qty_per_retailer_ratio > 1.3 |
+| No discounts + qty_ratio > 1.2 + can increase | **Increase** | 1 step up | Cart tightening if qty_per_retailer_ratio > 1.3 |
+| No discounts + otherwise | **Hold** | — | Cart tightening if qty_per_retailer_ratio > 1.3 |
+
+### Dropping (remaining cases)
+
+| Sub-case | Condition | Price Action | Magnitude | Other Actions |
+|----------|-----------|-------------|-----------|---------------|
+| **4A** Retailers weak | No SKU discount | **Hold** | — | Activate SKU discount; cart +25% |
+| **4A** Retailers weak | Has SKU discount + can reduce | **Decrease** | 1 step down | Keep discount; cart +25% |
+| **4A** Retailers weak | Has SKU discount + cannot reduce | **Hold** | — | Keep discount; cart +25% |
+| **4B** Qty weak | No QD | **Hold** | — | Activate QD; cart +25% |
+| **4B** Qty weak | Has QD + qty_ratio < 0.8 + can reduce | **Decrease** | 1 step down | Keep QD; cart +25% |
+| **4B** Qty weak | Has QD + qty_ratio ≥ 0.8 | **Hold** | — | Keep QD; cart +25% |
+| **4C** Both weak | No SKU discount | **Hold** | — | Activate SKU discount; cart +25% |
+| **4C** Both weak | Has discount + (qty < 0.8 or ret < 0.8) + can reduce | **Decrease** | 1 step down | Keep discount; cart +25% |
+| **4C** Both weak | Has discount + both ratios ≥ 0.8 | **Hold** | — | Keep discount; cart +25% |
+
+### Post-Processing
+
+| Step | Action |
+|------|--------|
+| Price floor enforcement | Raise to `effective_tiers[0]` if below (excludes zero demand / high DOH) |
+| Fixed price override | Google Sheet value replaces computed price |
+| Fixed cart override | Google Sheet value replaces computed cart |
+| Push order | Cart rules → prices → SKU discounts → QDs |
+
+### Daily Caps
+
+| Cap | Value |
+|-----|-------|
+| Max price reductions per day | 3 per SKU |
+| Max price increases per day | Shared with Module 4 (same cap) |
+
+---
+
 ## UTH Target Calculation
 
 ```mermaid

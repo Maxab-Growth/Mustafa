@@ -91,6 +91,60 @@ flowchart TD
 
 ---
 
+## Price Action Summary
+
+### Special Cases (evaluated first, in order)
+
+| Condition | Action | Steps / Magnitude | Cart Rule | Floor / Notes |
+|-----------|--------|-------------------|-----------|---------------|
+| **OOS** (stock = 0) | Set to max tier | Jump to highest effective tier | P95 percentile | — |
+| **Zero demand** + yesterday below On Track | Decrease | 2 steps down | P95 percentile | Floor: `commercial_min_price` |
+| **Zero demand** + yesterday above On Track | Hold | — | P95 percentile | — |
+| **Zero demand** + yesterday else | Decrease | 1 step down | P95 percentile | Floor: `commercial_min_price` |
+| **Low stock** (DOH ≤ 1) + combined above/on track | Increase | 1 step up | P50 percentile | — |
+| **Low stock** (DOH ≤ 1) + combined below | Hold | — | P50 percentile | — |
+| **No market/margin data** but has stock | Treat as Critical | Decrease (1 step down) | Percentile-based | — |
+
+### Normal Path — Performance Matrix
+
+| Combined Status | Yesterday Status | Action | Steps |
+|-----------------|-----------------|--------|-------|
+| On Track | On Track | **Hold** | — |
+| On Track | Above | **Increase** | 1 step up |
+| Above | Above (not on track) | **Increase** | 1 step up |
+| Above | On Track | **Hold** | — |
+| Below | Below | **Decrease** | 1 step down |
+| Below | Above | **Hold** | Oscillation guard |
+| All other combinations | — | **Hold** | — |
+
+### Market Signal Override (Normal Path only)
+
+| Condition | Override Effect |
+|-----------|----------------|
+| Market signal valid (data_points ≥ 10, volatility ≤ 5%, uptrend) + yesterday above On Track + base action = hold | Upgrade to **increase** |
+| Market signal valid + action = increase | Boost to **2 steps up** + above-market fallback if needed |
+| No technical signal + commercial price-up ≥ 15% | Synthetic **STRONG UPTREND** (triggers same overrides) |
+| No technical signal + commercial price-up 5–15% | Synthetic **UPTREND** (triggers same overrides) |
+| No technical signal + commercial price-up < 5% | No signal |
+
+### Above-Market Fallback (when tier ladder exhausted)
+
+| Priority | Method |
+|----------|--------|
+| 1 | Average margin step between effective tiers → price from WAC |
+| 2 | +20% of `target_margin` as margin step |
+| 3 | +1% on current price, rounded to 0.25 EGP |
+
+### Post-Processing
+
+| Step | Action |
+|------|--------|
+| Fixed price override | Google Sheet value replaces computed price |
+| Fixed cart override | Google Sheet value replaces computed cart |
+| Push order | Cart rules first → then prices per cohort |
+
+---
+
 ## Tier System — Effective Tiers
 
 ```mermaid
