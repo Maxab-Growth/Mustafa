@@ -141,8 +141,10 @@ The production entry point is **`market_data_module_2.ipynb`**, which runs V1 in
 
 1. **Brand fallback** — Python-side fallback for SKUs without any market data, using brand-level aggregates
 2. **Single-price expansion** — when only one competitor price exists, synthetic tiers are generated
-3. **Step subdivision** — tiers are subdivided when the gap implies > 30% target margin
-4. **Commercial price-up induced prices** — sourced from `retool.stocking_request`, injected as additional tier anchors
+3. **Margin anchor injection** — for SKUs with actual market data (`market_data_source = 'sku'`), two anchor prices are injected: **target margin price** (`wac / (1 - target_margin)`) and **ATH margin price** (`wac / (1 - ath_margin)`, 240-day IQR-filtered max across warehouses). These anchor the "comfort zone" so the subsequent subdivision creates fine-grained steps between the planned margin, the proven historical ceiling, and high market prices
+4. **Step subdivision** — tiers are subdivided when the gap implies > 30% target margin
+5. **Commercial price-up induced prices** — sourced from `retool.stocking_request`, injected as additional tier anchors
+6. **Final rounding + dedup** — all prices rounded to nearest 0.25 EGP, duplicates removed
 
 All downstream modules consume `effective_tiers` = `price_tiers` (from V2) > `margin_tier_prices` (from historical margins) > empty list.
 
@@ -350,7 +352,7 @@ The cost basis for all margin calculations. WAC reflects the blended purchase co
 
 All pricing modules operate on a unified **`effective_tiers`** list rather than raw market or margin columns. The resolution order:
 
-1. **`price_tiers`** — sorted price list from Market Data V2 (`get_market_data_v2()`), built from competitor sources + commercial price-up anchors
+1. **`price_tiers`** — sorted price list from Market Data V2 (`get_market_data_v2()`), built from competitor sources + margin anchors (target margin + ATH margin) + commercial price-up anchors, all rounded to 0.25 EGP
 2. **`margin_tier_prices`** — fallback ladder derived from historical margin boundaries (min → max margin, split by ABC class)
 3. **Empty list** — when neither source provides data
 
