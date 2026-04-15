@@ -109,7 +109,14 @@ flowchart TD
 | `get_percentile_data` | Order-line percentiles + layers for cart rule calibration |
 | `get_active_qd_now` | Currently active quantity discounts |
 
-### 6. Retailer Selection
+### 6. Margin Boundary Fallbacks
+
+| Function | Description |
+|----------|-------------|
+| `get_margin_boundaries_region` | Region-level margin boundaries (same IQR/quarter/time-weighted/optimal logic as warehouse-level, aggregated to product × region). Used as fallback when warehouse-level boundaries are both < 0 or missing |
+| `get_margin_boundaries_global` | Global product-level margin boundaries (same logic, aggregated across all warehouses). Used as second fallback when region-level is also bad |
+
+### 7. Retailer Selection
 
 | Function | Description |
 |----------|-------------|

@@ -79,15 +79,32 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    A[Daily margins\n per warehouse × product] --> B[IQR cleaning\nRemove outliers]
+    A[Daily margins\nper warehouse x product] --> B[IQR cleaning\nRemove outliers]
     B --> C[Same-quarter filter]
-    C --> D[Time-weighted\nexp −0.023 × days_ago]
-    D --> E[8 tiers\nmin_boundary → max_boundary]
+    C --> D[Time-weighted\nexp -0.023 x days_ago]
+    D --> E[8 tiers\nmin_boundary to max_boundary]
     D --> F[Optimal margin\n120d maximizing smoothed\nweighted gross profit]
 ```
 
 - Exponential decay factor: `exp(-0.023 × days_ago)`
 - Optimal margin: 120-day window maximizing smoothed weighted gross profit
+
+### Cascading Boundary Fallback
+
+When warehouse-level boundaries are unusable (both `min_boundary` and `max_boundary` < 0, or no data), `get_margin_tiers()` falls back in order:
+
+```mermaid
+flowchart TD
+    WH["Warehouse-level boundaries\nper product x warehouse"] --> CHK{Both min and max\nbelow 0 or missing?}
+    CHK -- No --> USE_WH[Use warehouse boundaries]
+    CHK -- Yes --> RGN["Region-level boundaries\nper product x region\nget_margin_boundaries_region"]
+    RGN --> CHK2{Still both below 0\nor missing?}
+    CHK2 -- No --> USE_RGN[Use region boundaries]
+    CHK2 -- Yes --> GLB["Global boundaries\nper product\nget_margin_boundaries_global"]
+    GLB --> USE_GLB[Use global boundaries]
+```
+
+Each fallback level uses the same IQR/quarter/time-weighted/optimal logic, just aggregated at a broader scope. A `boundary_source` column tracks provenance: `'warehouse'`, `'region'`, or `'global'`.
 
 ---
 
