@@ -14,7 +14,7 @@
 WITH 
 -- Step 1: Get SKUs with sales in the last 120 days
 skus_with_sales AS (
-select product_id, case when cumulative_contribution > 0.8 then 'C' when cumulative_contribution > 0.4 then 'B' else 'A' end as abc_class
+select product_id, case when cumulative_contribution > 0.9 then 'D' when cumulative_contribution > 0.8 then 'C' when cumulative_contribution > 0.4 then 'B' else 'A' end as abc_class
 from (
 select *,SUM(cntrb) OVER (ORDER BY cntrb DESC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_contribution
 from (
