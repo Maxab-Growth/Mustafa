@@ -75,7 +75,7 @@ flowchart TD
 | Function | Description |
 |----------|-------------|
 | `get_current_stocks` | Current stock levels with parent → child warehouse fallback (236↔343, 1↔467, 962↔343) |
-| `get_current_prices` | DBDP live slot prices + cohort prices |
+| `get_current_prices` | Current cohort prices sourced **only from `cohort_pricing_changes`** (latest row per cohort/product/PU via `QUALIFY ROW_NUMBER() OVER (... ORDER BY created_at DESC) = 1`). DBDP_PRICES is no longer queried — it stopped producing reliable data. |
 | `get_current_wac` | WAC from `finance.all_cogs` |
 | `get_current_cart_rules` | `MAX_PER_SALES_ORDER` with fallback cohort; groupby min |
 | `get_packing_units` | Preferred packing unit based on 60-day sales history |
@@ -115,8 +115,15 @@ flowchart TD
 |----------|-------------|
 | `get_margin_boundaries_region` | Region-level margin boundaries (same IQR/quarter/time-weighted/optimal logic as warehouse-level, aggregated to product × region). Used as fallback when warehouse-level boundaries are both < 0 or missing |
 | `get_margin_boundaries_global` | Global product-level margin boundaries (same logic, aggregated across all warehouses). Used as second fallback when region-level is also bad |
+| `get_optimal_blended_margins` | **Region-level rollup** of optimal margin and blended margin (replaces the old ATH margin source). The query (`OPTIMAL_BLENDED_MARGIN_QUERY`) starts from warehouse-level optimal/blended margin computations, then aggregates to region grain via NMV-weighted average. Used by `market_data_module_2` to inject `optimal_margin` and `blended_margin` anchor prices into `price_tiers` (replacing the earlier ATH-margin anchor that was producing prices too high). Parent/child warehouses are mapped directly so the rollup respects the same parent_whs mapping as `get_current_stocks`. |
 
-### 7. Retailer Selection
+### 7. Periodic-action attempt history
+
+| Function | Description |
+|----------|-------------|
+| `RECENT_M3_ATTEMPTS_QUERY` | Returns the latest M3 action per SKU within the last 24h from `pricing_periodic_push`, via `QUALIFY ROW_NUMBER() OVER (PARTITION BY ... ORDER BY created_at DESC) = 1`. Consumed by Module 3 to break the sku_discount/QD retry loop: a SKU attempted in the last 24h is treated as if it has the discount, so price reduction proceeds and the discount-handler re-attempt is skipped. |
+
+### 8. Retailer Selection
 
 | Function | Description |
 |----------|-------------|

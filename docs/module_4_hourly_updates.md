@@ -109,11 +109,38 @@ flowchart LR
 
 `smooth_price_increase` moves the price halfway to the next tier, clamps the margin step between min and max derived from `target_margin`, and rounds to 0.25 EGP increments.
 
+### Achievement-based magnitude (added)
+
+For both `get_rets_growing_price` and `get_qty_growing_price`, the smoothing magnitude now scales with the SKU's projected achievement for the day:
+
+```
+projected_ach = (hours_uth / 24) * uth_ach + (remaining_hours / 24) * last_hour_ach
+```
+
+| `projected_ach` | Behavior |
+|---|---|
+| < 2.0 | Normal `smooth_price_increase` (halfway to next tier with margin clamping) |
+| >= 2.0 | **Skip smoothing** — jump to the full next tier price (or to the growing-and-commercial branch's `MAX(next_tier, commercial_min)`) |
+
+Rationale: when a SKU is on track to over-achieve by 2x or more, demand is clearly strong enough to absorb a full-tier price step without volume loss. Halfway smoothing is too conservative.
+
+### `growing_and_commercial` branch
+
+For SKUs on the `growing_and_commercial` path, `new_price = MAX(next_tier_price, commercial_min_price)`. Both upward bounds are respected — never below commercial_min, never below the next legitimate growth tier.
+
 ---
 
 ## Effective Tiers
 
 All price actions use `effective_tiers` = `price_tiers` (V2) > `margin_tier_prices` > empty list, consistent with Module 3. Dead code removed: `get_status_std`, `subdivide_tiers` are no longer used — status classification uses fixed ratio thresholds (0.9 / 1.1), not ±1 standard deviation bands.
+
+### Single V2 market-data call
+
+M4 used to call both `get_market_data()` (V1) and `get_market_data_v2()` (V2). Now calls `get_market_data_v2()` once and derives both percentile view (legacy column names) and price tier view (for `effective_tiers`) from the single result. Halved the time spent in market-data loading.
+
+### Market max ceiling
+
+Same rule as M2 and M3: non-growing SKUs are clamped at `max(effective_tiers)`. Growing SKUs are exempt (they need to step beyond the top of the ladder).
 
 ---
 
@@ -146,7 +173,8 @@ All price actions use `effective_tiers` = `price_tiers` (V2) > `margin_tier_pric
 |--------|-------------|
 | Price updates | MaxAB API |
 | Cart rule updates | MaxAB API (low stock path) |
-| Action archive | Snowflake |
+| Non-food cohort prices | MaxAB API via `non_food_cohorts_push.push_to_non_food_cohorts(df_output, source_module='module_4', mode=PUSH_MODE)` (try/except guarded) |
+| Action archive | Snowflake `pricing_hourly_push` |
 
 ---
 
@@ -194,6 +222,7 @@ Runs on hours **between** Module 3 slots:
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `data_extraction`, `queries_module` (UTH, WAC, stocks, `get_commercial_min_prices`), `setup_environment_2`, `common_functions` |
+| **Requires** | `data_extraction`, `market_data_module_2` (single `get_market_data_v2()` call), `queries_module` (UTH, WAC, stocks, `get_commercial_min_prices`), `setup_environment_2`, `common_functions`, `push_prices_handler`, `non_food_cohorts_push` |
+| **Triggers** | `non_food_cohorts_push.push_to_non_food_cohorts()` |
 | **Coordinates with** | `module_3_periodic_actions` (shared increase cap, cooldowns) |
-| **Archives to** | Snowflake |
+| **Archives to** | Snowflake `pricing_hourly_push` |

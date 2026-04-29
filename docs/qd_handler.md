@@ -134,6 +134,18 @@ flowchart LR
 
 | Direction | Module |
 |-----------|--------|
-| **Called by** | `module_3_periodic_actions` |
-| **Requires** | `queries_module` (order history, active QDs), `market_data_module` (tier candidates), `common_functions` (API upload) |
+| **Called by** | `module_3_periodic_actions` (passes `effective_tiers` per SKU via `df_qd.merge(... suffixes=('', '_from_df'))` to prevent silent renaming of `effective_tiers` to `_x`/`_y`) |
+| **Requires** | `queries_module` (order history, active QDs), `market_data_module_2` (tier candidates via `effective_tiers`), `common_functions` (API upload) |
 | **External** | MaxAB API (QD creation/deactivation) |
+
+---
+
+## Why the merge `suffixes` matter
+
+M3 passes `effective_tiers` (a list-typed column) into `df_qd` via merge. If the merge is left without `suffixes`, pandas auto-renames any colliding column to `effective_tiers_x` and `effective_tiers_y`, and the handler then can't find the column under its expected name. The merge is now:
+
+```python
+df_qd = df_qd.merge(other_df, on='...', how='left', suffixes=('', '_from_df'))
+```
+
+This forces pandas to keep the left-side `effective_tiers` under its original name and rename the right-side one to `effective_tiers_from_df` (which the handler ignores).

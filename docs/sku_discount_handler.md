@@ -137,7 +137,17 @@ flowchart TD
 
 | Direction | Module |
 |-----------|--------|
-| **Called by** | `module_3_periodic_actions` |
-| **Requires** | `queries_module` (retailer pools, exclusions, active QDs), `market_data_module` (tier candidates), `common_functions` (S3 upload) |
+| **Called by** | `module_3_periodic_actions` (passes `effective_tiers` per SKU) |
+| **Requires** | `queries_module` (retailer pools, exclusions, active QDs), `market_data_module_2` (tier candidates via `effective_tiers`), `common_functions` (S3 upload) |
 | **Coordinates with** | `qd_handler` (removes QD-conflicting retailers) |
 | **External** | S3 (discount file upload), MaxAB API (deactivation) |
+
+---
+
+## Bug fix: `unhashable type: 'list'` from drop_duplicates
+
+`effective_tiers` is a list-typed column passed into this handler from M3. Earlier `df.drop_duplicates()` calls (without a `subset`) tried to hash the list values and crashed with `TypeError: unhashable type: 'list'` inside pandas' `factorize_array`.
+
+Fix at `structure_sku_discount_dataframe()` (~line 1280): `df.drop_duplicates(subset=['product_id', 'warehouse_id', 'retailer_id', 'packing_unit_id'])` — explicit subset that excludes the list column.
+
+If you ever add a new list-typed column passed from M3, make sure every `drop_duplicates` and `groupby` in this handler uses an explicit `subset` that excludes it.

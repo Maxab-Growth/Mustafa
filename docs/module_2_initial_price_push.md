@@ -97,7 +97,7 @@ flowchart TD
 
 | Condition | Action | Steps / Magnitude | Cart Rule | Floor / Notes |
 |-----------|--------|-------------------|-----------|---------------|
-| **OOS** (stock = 0) | Set to max tier | Jump to highest effective tier | P95 percentile | — |
+| **OOS** (stock = 0) | ABC-bucketed percentile of `effective_tiers` | A class -> `market_50`, B class -> `market_75`, C class -> `market_max`. Replaces the old "always jump to max" rule | P95 percentile | A SKUs are common high-velocity items; pricing them at P50 when out of stock recovers volume faster on restock without giving up too much margin |
 | **Zero demand** + yesterday below On Track | Decrease | 2 steps down | P95 percentile | Floor: `commercial_min_price` |
 | **Zero demand** + yesterday above On Track | Hold | — | P95 percentile | — |
 | **Zero demand** + yesterday else | Decrease | 1 step down | P95 percentile | Floor: `commercial_min_price` |
@@ -134,6 +134,12 @@ flowchart TD
 | 1 | Average margin step between effective tiers → price from WAC |
 | 2 | +20% of `target_margin` as margin step |
 | 3 | +1% on current price, rounded to 0.25 EGP |
+
+### Market Max Ceiling
+
+After the action matrix and any above-market fallback, **non-growing SKUs** (combined status not in {`above`, `growing`}) are clamped at `max(effective_tiers)`. This prevents an over-discounted SKU from being repriced above the highest competitor price during the daily reset. Growing SKUs are exempt — they are explicitly allowed to step beyond the top of the ladder.
+
+**Re-clamp to commercial_min**: after the market-max ceiling is applied, if the resulting price is below `commercial_min_price`, it is bumped back up to `commercial_min_price`. The commercial floor takes precedence over the market ceiling.
 
 ### Post-Processing
 
@@ -196,6 +202,7 @@ flowchart LR
 |--------|-------------|
 | Cart rule updates | MaxAB API (pushed first) |
 | Price updates per cohort | MaxAB API |
+| Non-food cohort prices | MaxAB API via `non_food_cohorts_push.push_to_non_food_cohorts(df_output, source_module='module_2', mode=PUSH_MODE)` (called inside try/except so a non-food failure does not block the main push) |
 | `pricing_initial_push` | Snowflake archive table |
 
 ---
@@ -228,6 +235,7 @@ When no market signal exists from technical indicators, Module 2 falls back to c
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `data_extraction` (Pricing_data_extraction table), `market_data_module_2` (`effective_tiers` via `price_tiers` / `margin_tier_prices`), `queries_module` (`get_commercial_price_ups()`), `common_functions` (API upload, Slack), `setup_environment_2` |
+| **Requires** | `data_extraction` (Pricing_data_extraction table), `market_data_module_2` (`effective_tiers` via `price_tiers` / `margin_tier_prices`), `queries_module` (`get_commercial_price_ups()`), `common_functions` (API upload, Slack), `setup_environment_2`, `push_prices_handler`, `push_cart_rules_handler`, `non_food_cohorts_push` (mirroring) |
+| **Triggers** | `non_food_cohorts_push.push_to_non_food_cohorts()` |
 | **External** | MaxAB API (price + cart push), Google Sheets (fixed overrides) |
 | **Archives to** | Snowflake — `pricing_initial_push` |

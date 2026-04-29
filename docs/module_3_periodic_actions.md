@@ -243,7 +243,8 @@ flowchart LR
 | Cart rule changes | MaxAB API |
 | SKU discount instructions | → `sku_discount_handler` |
 | QD instructions | → `qd_handler` |
-| Action archive | Snowflake + Slack |
+| Non-food cohort prices | MaxAB API via `non_food_cohorts_push.push_to_non_food_cohorts(df_output, source_module='module_3', mode=PUSH_MODE)` (try/except guarded) |
+| Action archive | Snowflake `pricing_periodic_push` + Slack |
 
 ---
 
@@ -253,9 +254,31 @@ All pricing decisions use `effective_tiers` = `price_tiers` (V2) > `margin_tier_
 
 ---
 
+## Single V2 market-data call
+
+M3 historically called both `get_market_data()` (V1) and `get_market_data_v2()` (V2) at startup. This was redundant because `get_market_data_v2()` already includes everything V1 produces. M3 now calls `get_market_data_v2()` once and derives both views (V2 `price_tiers` for `effective_tiers` construction, and the percentile derivative for legacy column names) from the single result. Halved the time spent in market-data loading.
+
+---
+
+## Recent attempts loop break (24h discount cooldown)
+
+A nasty loop existed where M3 would (1) flag a SKU for sku_discount or QD, (2) call the handler, (3) the handler fail to push (validation error, no eligible retailers, etc.), (4) on the next run M3 sees no active discount and tries again. Forever.
+
+Fix: M3 now loads `RECENT_M3_ATTEMPTS_QUERY` per SKU (24h lookback, latest action via `QUALIFY ROW_NUMBER() OVER (PARTITION BY ... ORDER BY created_at DESC) = 1`). The has_sku_discount / has_qd gates inside `generate_periodic_action` are widened to `OR with recently_attempted_*`, so a SKU that was attempted in the last 24h is treated as if it has the discount (price reduction proceeds, discount re-attempt does not).
+
+The query uses `pricing_periodic_push` as the attempt log. The DB schema for `pricing_periodic_push` has NOT changed — an `assert` runs before the archive push to ensure the new internal columns (`recently_attempted_sku_disc`, `recently_attempted_qd`) are dropped before write.
+
+---
+
 ## Commercial minimum prices
 
 Each run refreshes commercial minimum constraints from `finance.minimum_prices` via `queries_module.get_commercial_min_prices()`, instead of relying on the morning `Pricing_data_extraction` snapshot for those values. Post-processing price floor enforcement uses `effective_tiers[0]` (the lowest tier price) as the price floor — not the legacy `market_min` column.
+
+---
+
+## Market max ceiling
+
+After the action matrix, **non-growing SKUs** are clamped at `max(effective_tiers)`. Same rule as M2: the daily reset shouldn't reprice non-growing SKUs above the highest competitor price. Growing SKUs are exempt.
 
 ---
 
@@ -290,7 +313,7 @@ Each run refreshes commercial minimum constraints from `finance.minimum_prices` 
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `data_extraction` (Pricing_data_extraction), `queries_module` (UTH, stocks, percentiles, `get_commercial_min_prices`), `setup_environment_2`, `common_functions` |
-| **Triggers** | `sku_discount_handler`, `qd_handler` |
-| **Coordinates with** | `module_4_hourly_updates` (shared increase cap) |
-| **Archives to** | Snowflake, Slack |
+| **Requires** | `data_extraction` (Pricing_data_extraction), `market_data_module_2` (single `get_market_data_v2()` call), `queries_module` (UTH, stocks, percentiles, `get_commercial_min_prices`, `RECENT_M3_ATTEMPTS_QUERY`), `setup_environment_2`, `common_functions`, `push_prices_handler`, `push_cart_rules_handler`, `non_food_cohorts_push` |
+| **Triggers** | `sku_discount_handler` (with `effective_tiers` passed in), `qd_handler` (with `effective_tiers` passed in via `df_qd.merge` using `suffixes=('', '_from_df')` to prevent silent renaming), `non_food_cohorts_push` |
+| **Coordinates with** | `module_4_hourly_updates` (shared increase cap, M4 2h cooldown) |
+| **Archives to** | Snowflake `pricing_periodic_push`, Slack |

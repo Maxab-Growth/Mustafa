@@ -62,14 +62,15 @@ flowchart TD
 
 | Field | Computation |
 |-------|-------------|
-| `price_position` | Below Market / At Market / Above Market — based on where current price falls in market band |
+| `price_position` | One of `Below Market`, `Below Min`, `At Min`, `At 25th`, `At 50th`, `At 75th`, `At Max`, `Above Market`, `No Market Data`. Computed daily; appended to the table with `created_at` so the snapshot history is queryable. |
 | `performance_tag` | Star Performer / On Track / Underperformer / Critical — from benchmark ratios |
 | `DOH` | Days on Hand = stock / running_rate; `999` when stock > 0 but running_rate = 0 |
 | `running_rate` | 30d/90d exponential decay blend, capped at P95 |
 | `ABC` | A ≤ 30% cumulative NMV, B ≤ 75%, C = rest |
 | `expected_receiving_day` | From PO data + lead time; +48h if unconfirmed; default 72h |
-| `combined_weighted_ratio` | 20% yesterday + 40% 7-day + 40% MTD performance ratio |
+| `combined_weighted_ratio` | 20% yesterday + 40% 7-day + 40% MTD performance ratio. Sales components are **NMV-weighted across parent and child warehouses** to avoid double-counting when a parent + its child both contribute to the same physical stock pool. The benchmark targets remain at the warehouse-level grain. |
 | `all_time_high_margin` | IQR-filtered 240-day max margin; negatives clipped to 0.07 |
+| `created_at` | Cairo `TODAY` value appended to every row before upload to `MATERIALIZED_VIEWS.Pricing_data_extraction` (append mode). This is the column you use to query historical snapshots — NOT `run_date` (`run_date` is just an alias inside one of the source CTEs, never written to the table). |
 
 ---
 
@@ -118,8 +119,8 @@ flowchart TD
 | 8 | Merge margin tiers, min selling qty, yesterday discount analytics |
 | 9 | Merge performance benchmarks (240d), performance tags, combined weighted ratio |
 | 10 | Merge normal refill, cart rules, commercial min, no_nmv_4m, active SKU discount % |
-| 11 | Filter: keep rows with recent NMV OR positive stock; dedupe on `(product_id, warehouse_id)` |
-| 12 | Export: Excel + Snowflake + Slack |
+| 11 | Filter: keep rows with recent NMV OR positive stock; dedupe on `(product_id, warehouse_id)`. **Inactive SKUs are filtered out** before saving (only active SKUs are pushed to `Pricing_data_extraction` so downstream modules never act on disabled products). |
+| 12 | Export: Excel + Snowflake (`MATERIALIZED_VIEWS.Pricing_data_extraction`, append mode with `created_at = TODAY`) + Slack |
 
 ---
 

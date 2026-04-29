@@ -92,5 +92,5 @@ Each product is automatically expanded to all 9 cohorts (700-1126). Market-based
 
 | Direction | Module |
 |-----------|--------|
-| **Requires** | `market_data_module` (`get_market_data_v2`), `queries_module` (`get_current_stocks`), `push_prices_handler` (API push), `db.py` (queries), `constants.py` (cohorts, warehouses) |
-| **External** | MaxAB API (price push), Snowflake (WAC, prices, products) |
+| **Requires** | `market_data_module_2` (`get_market_data_v2`, V2 standalone — no `%run market_data_module.ipynb` chain), `queries_module` (added via `%run queries_module.ipynb` to bring `get_optimal_blended_margins` and `get_current_prices` from `cohort_pricing_changes` into scope), `get_current_stocks`, `push_prices_handler` (API push), `db.py` (queries), `constants.py` (cohorts, warehouses) |
+| **External** | MaxAB API (price push), Snowflake (WAC, prices from `cohort_pricing_changes`, products) |
