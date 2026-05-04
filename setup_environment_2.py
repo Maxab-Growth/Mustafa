@@ -110,14 +110,18 @@ def initialize_env():
     
     os.environ["INSTANCE_IP"] = get('https://api.ipify.org').text
     
+# Replace lines 113-119
     json_path = str(Path.home())+"/service_account_key.json"
     print(json_path)
     bigquery_key = get_secret("prod/bigquery/sagemaker")
-    f = open(json_path, "w")
-    f.write(bigquery_key)
-    f.close()
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = json_path
-    
+    if bigquery_key:
+        f = open(json_path, "w")
+        f.write(bigquery_key)
+        f.close()
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = json_path
+    else:
+        print("WARNING: prod/bigquery/sagemaker secret returned None - skipping BigQuery setup. bq_query() will not work this session.")
+        
     slack_secret = json.loads(get_secret("prod/slack/reports"))
     os.environ["SLACK_TOKEN"] = slack_secret["token"]
 
