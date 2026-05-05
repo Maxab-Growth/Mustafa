@@ -107,9 +107,10 @@ flowchart TD
 
 | Condition | Price Action | Magnitude | Other Actions |
 |-----------|-------------|-----------|---------------|
-| Discounts already exist + can reduce | **Induced decrease** | 1 margin step down via `calculate_induced_price` | Activate SKU discount + QD; cart → max(layer_3, current, 100) or 150 |
-| Discounts already exist + cannot reduce (hit daily cap) | **Hold** | — | Keep discounts + QD; wide cart |
-| No discounts yet | **Hold** (discounts first) | — | Activate SKU discount + QD; wide cart; price cut deferred to next run |
+| **qty_ratio ≥ 0.9 (UTH on track)** | **Hold** | — | Keep discounts + QD; wide cart. "Don't punish good UTH" guard - mirrors HIGH DOH `grew` check so the existing discount/cart actions are not undermined by an additional price cut |
+| qty_ratio < 0.9 + discounts already exist + can reduce | **Induced decrease** | 1 margin step down via `calculate_induced_price` | Activate SKU discount + QD; cart → max(layer_3, current, 100) or 150 |
+| qty_ratio < 0.9 + discounts already exist + cannot reduce (hit daily cap) | **Hold** | — | Keep discounts + QD; wide cart |
+| qty_ratio < 0.9 + no discounts yet | **Hold** (discounts first) | — | Activate SKU discount + QD; wide cart; price cut deferred to next run |
 
 ### High DOH (responsive_doh > 30, inventory_value > 200, not OOS yesterday)
 
