@@ -247,12 +247,12 @@ def initialize_env():
     s3.download_file(bucket_name, key_name, '/tmp/rsa_key.p8')
     
     # ########## BigQuery credentials ##########
-    json_path = str(Path.home())+"/service_account_key.json"
-    print(json_path)
-    bigquery_key = get_secret("prod/bigquery/sagemaker")
-    f = open(json_path, "w")
-    f.write(bigquery_key)
-    f.close()
+    # json_path = str(Path.home())+"/service_account_key.json"
+    # print(json_path)
+    # bigquery_key = get_secret("prod/bigquery/sagemaker")
+    # f = open(json_path, "w")
+    # f.write(bigquery_key)
+    # f.close()
 
     # ########## GOOGLE SHEETS credentials ##########
     json_path_sheets = str(Path.home())+"/service_account_key_sheets.json"
